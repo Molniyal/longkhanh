@@ -532,6 +532,61 @@
       }
     }
 
+    /* Workshop Performance Cards */
+    .workshop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .workshop-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .workshop-card h4 {
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .progress-container {
+      height: 10px;
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 5px;
+      margin: 15px 0;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--primary-gradient);
+      border-radius: 5px;
+      transition: width 0.5s ease;
+    }
+
+    .workshop-metrics {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .metric-loi {
+      color: var(--danger);
+    }
+
+    .metric-done {
+      color: var(--success);
+    }
+
     /* Mobile */
     .mobile-toggle {
       display: none;
@@ -620,27 +675,28 @@
 
       <section class="content">
         <!-- DASHBOARD TAB -->
+        <!-- DASHBOARD TAB -->
         <div id="tab-dashboard">
           <div class="stats-grid" id="statsGrid">
             <div class="stat-card">
-              <div class="stat-icon">📈</div>
+              <div class="stat-icon">📊</div>
               <div class="stat-data">
-                <div class="stat-value" id="statTotal">-</div>
-                <div class="stat-label">Tổng lượt kiểm tra</div>
+                <div class="stat-value" id="statTotalDevices">-</div>
+                <div class="stat-label">Tổng thiết bị</div>
               </div>
             </div>
-            <div class="stat-card stat-tot">
-              <div class="stat-icon" style="background: rgba(67, 160, 71, 0.1);">✅</div>
+            <div class="stat-card">
+              <div class="stat-icon">✅</div>
               <div class="stat-data">
-                <div class="stat-value" id="statTot">-</div>
-                <div class="stat-label">Thiết bị tốt</div>
+                <div class="stat-value" id="statPercentAvg">-</div>
+                <div class="stat-label">% Hoàn thành (Tháng)</div>
               </div>
             </div>
             <div class="stat-card stat-loi">
-              <div class="stat-icon" style="background: rgba(229, 57, 53, 0.1);">❌</div>
+              <div class="stat-icon" style="background: rgba(229, 57, 53, 0.1);">⚠️</div>
               <div class="stat-data">
                 <div class="stat-value" id="statLoi">-</div>
-                <div class="stat-label">Cần xử lý</div>
+                <div class="stat-label">Thiết bị lỗi</div>
               </div>
             </div>
             <div class="stat-card">
@@ -652,31 +708,14 @@
             </div>
           </div>
 
-          <div class="glass-panel">
-            <div class="filter-bar">
-              <div class="filter-group">
-                <label>Khu vực xưởng</label>
-                <select id="filterXuong">
-                  <option value="">Tất cả khu vực</option>
-                </select>
-              </div>
-              <div class="filter-group">
-                <label>Trạng thái</label>
-                <select id="filterTinhTrang">
-                  <option value="">Tất cả trạng thái</option>
-                  <option value="Lỗi" style="color:red">⚠️ Có lỗi/Hư hỏng</option>
-                  <option value="Tốt" style="color:green">✅ Hoạt động tốt</option>
-                </select>
-              </div>
-              <button class="btn-primary" onclick="loadDashboard()">Tìm kiếm</button>
-              <button class="btn-secondary" onclick="resetFilter()">Làm mới</button>
-            </div>
+          <h3 style="margin-bottom: 20px;">🏭 Hiệu suất kiểm tra theo Xưởng (Tháng này)</h3>
+          <div class="workshop-grid" id="workshopGrid">
+            <div style="grid-column: 1/-1; text-align:center; padding: 40px;">⏳ Đang tính toán hiệu suất xưởng...</div>
           </div>
 
-          <div class="table-container">
+          <div class="table-container" id="historySection">
             <div class="table-header">
               <h3 style="font-weight: 700;">📑 Nhật ký kiểm tra gần đây</h3>
-              <span id="rowCount" style="font-size:12px; font-weight:700; color:var(--text-secondary)"></span>
             </div>
             <div class="table-wrapper glass-panel" style="padding: 0; border-radius: 15px;">
               <table id="mainTable">
@@ -695,7 +734,7 @@
                 </thead>
                 <tbody id="tableBody">
                   <tr>
-                    <td colspan="9" style="text-align:center; padding: 50px;">⏳ Hệ thống đang truy xuất dữ liệu...</td>
+                    <td colspan="9" style="text-align:center; padding: 50px;">⏳ Đang tải nhật ký...</td>
                   </tr>
                 </tbody>
               </table>
@@ -821,28 +860,56 @@
 
     async function loadDashboard() {
       const filter = {
-        xuong: document.getElementById('filterXuong').value,
-        tinhTrang: document.getElementById('filterTinhTrang').value,
+        xuong: document.getElementById('filterXuong') ? document.getElementById('filterXuong').value : '',
+        tinhTrang: document.getElementById('filterTinhTrang') ? document.getElementById('filterTinhTrang').value : '',
       };
-      if (currentUser.vaiTro === 'HSE' && !filter.xuong) filter.xuong = currentUser.xuong;
-
-      document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" style="text-align:center; padding: 50px;">⏳ Đang đồng bộ dữ liệu...</td></tr>';
 
       try {
         const res = await callAPI('getDashboardData', { filter: filter });
         if (!res.success) throw new Error(res.message);
 
-        // Cập nhật stats
-        document.getElementById('statTotal').textContent = res.stats.total;
-        document.getElementById('statTot').textContent = res.stats.tot;
-        document.getElementById('statLoi').textContent = res.stats.loi;
-        document.getElementById('statToday').textContent = res.stats.today;
+        // 1. Cập nhật Stats tổng quát
+        const s = res.stats;
+        document.getElementById('statTotalDevices').textContent = s.totalDevices;
+        document.getElementById('statLoi').textContent = s.totalLoi;
+        document.getElementById('statToday').textContent = s.today;
 
-        renderTable(res.data);
-        document.getElementById('rowCount').textContent = res.data.length + ' kết quả hiển thị';
+        const totalPercent = s.totalDevices > 0 ? Math.round((s.totalCheckedThisMonth / s.totalDevices) * 100) : 0;
+        document.getElementById('statPercentAvg').textContent = totalPercent + '%';
+
+        // 2. Render Workshop Cards
+        renderWorkshopStats(res.workshopStats);
+
+        // 3. Render Table History
+        renderTable(res.history);
       } catch (err) {
-        document.getElementById('tableBody').innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 50px; color:red">❌ Lỗi: ${err.message}</td></tr>`;
+        console.error(err);
       }
+    }
+
+    function renderWorkshopStats(stats) {
+      const grid = document.getElementById('workshopGrid');
+      if (!grid) return;
+      if (!stats || stats.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center">Chưa có dữ liệu thiết bị để thống kê</div>';
+        return;
+      }
+
+      grid.innerHTML = stats.map(w => `
+            <div class="workshop-card">
+                <h4>
+                    <span>${w.xuong}</span>
+                    <span style="color:#1a237e; font-size:18px">${w.percent}%</span>
+                </h4>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: ${w.percent}%"></div>
+                </div>
+                <div class="workshop-metrics">
+                    <span class="metric-done">✅ Đã xong: ${w.checked}/${w.total}</span>
+                    <span class="metric-loi">⚠️ Lỗi: ${w.loi}</span>
+                </div>
+            </div>
+        `).join('');
     }
 
     function renderTable(data) {
