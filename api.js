@@ -1,6 +1,6 @@
 const APP_CONFIG = {
   // Thay thế URL sau bằng URL Web App của bạn sau khi deploy MỚI NHẤT
-  API_URL: "https://script.google.com/macros/s/AKfycbyThh4rR--mNuUgXCs62-JLJgQfaIl1b8PW51VtI_2FYXBOJL2SDM2foQLXQ09A6iXSgQ/exec"
+  API_URL: "https://script.google.com/macros/s/AKfycbxGjgAYoDfARHXXS6DoDlg14NBXHhO1A5IpwV0tlSRIDhzhbir0Vt2RkdLOqhNx8qcK1w/exec"
 };
 
 /**
@@ -27,5 +27,84 @@ async function callAPI(action, payload = {}) {
   } catch (error) {
     console.error("API Error:", error);
     return { success: false, message: "Lỗi kết nối API: " + error.message };
+  }
+}
+/**
+ * Tiện ích nén ảnh client-side
+ * Mục tiêu: dung lượng 200-300kb
+ */
+async function compressImage(file, quality = 0.7, maxWidth = 1024) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = e.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob((blob) => {
+          resolve(blob);
+        }, 'image/jpeg', quality);
+      };
+    };
+  });
+}
+
+/**
+ * Upload ảnh lên Cloudinary với nén tự động
+ */
+async function uploadImage(file, folder, onProgress) {
+  try {
+    const cfgRes = await callAPI('getCloudinaryConfig');
+    if (!cfgRes.success) throw new Error("Không lấy được cấu hình Cloudinary");
+
+    const compressedBlob = await compressImage(file);
+
+    const formData = new FormData();
+    formData.append('file', compressedBlob, 'image.jpg');
+    formData.append('upload_preset', cfgRes.data.uploadPreset);
+    formData.append('folder', folder || 'pccc');
+
+    const xhr = new XMLHttpRequest();
+    return new Promise((resolve, reject) => {
+      xhr.open('POST', `https://api.cloudinary.com/v1_1/${cfgRes.data.cloudName}/image/upload`, true);
+
+      if (onProgress) {
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) {
+            const percent = Math.round((e.loaded / e.total) * 100);
+            onProgress(percent);
+          }
+        };
+      }
+
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          const res = JSON.parse(xhr.responseText);
+          resolve(res.secure_url);
+        } else {
+          reject(new Error("Lỗi upload Cloudinary"));
+        }
+      };
+
+      xhr.onerror = () => reject(new Error("Lỗi kết nối upload"));
+      xhr.send(formData);
+    });
+  } catch (error) {
+    console.error("Upload error:", error);
+    throw error;
   }
 }

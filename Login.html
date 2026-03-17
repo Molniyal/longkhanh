@@ -2,196 +2,155 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Đăng nhập - Hệ thống PCCC</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Đăng nhập - PCCC</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --primary: #c62828;
+    --secondary: #1a237e;
+    --text: #1a1a1a;
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Outfit', sans-serif;
     background: linear-gradient(135deg, #1a237e 0%, #c62828 100%);
-    min-height: 100vh;
+    background-attachment: fixed;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
+    overflow: hidden;
   }
-  .card {
-    background: white;
-    border-radius: 16px;
-    padding: 40px 36px;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+
+  /* Animated background shapes */
+  .shape {
+    position: absolute; border-radius: 50%; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px);
+    z-index: -1; animation: float 10s infinite alternate ease-in-out;
   }
-  .logo {
+  .shape-1 { width: 300px; height: 300px; top: -100px; left: -100px; background: rgba(26, 35, 126, 0.3); }
+  .shape-2 { width: 200px; height: 200px; bottom: -50px; right: -50px; background: rgba(198, 40, 40, 0.3); }
+
+  @keyframes float {
+    from { transform: translate(0, 0) rotate(0deg); }
+    to { transform: translate(20px, 40px) rotate(10deg); }
+  }
+
+  .glass-card {
+    background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border); border-radius: 32px; padding: 48px 40px;
+    width: 100%; max-width: 400px; box-shadow: 0 15px 45px rgba(0,0,0,0.2);
     text-align: center;
-    margin-bottom: 28px;
   }
-  .logo-icon {
-    font-size: 48px;
-    display: block;
-    margin-bottom: 8px;
-  }
-  .logo h1 {
-    font-size: 20px;
-    font-weight: 700;
-    color: #1a237e;
-    line-height: 1.3;
-  }
-  .logo p {
-    font-size: 13px;
-    color: #888;
-    margin-top: 4px;
-  }
-  .divider {
-    border: none;
-    border-top: 1px solid #eee;
-    margin: 20px 0;
-  }
-  label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: #444;
-    margin-bottom: 6px;
-  }
+
+  .logo-icon { font-size: 64px; margin-bottom: 20px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1)); }
+  h1 { font-size: 24px; font-weight: 800; color: var(--secondary); margin-bottom: 8px; letter-spacing: -0.5px; }
+  p.subtitle { color: #666; font-size: 14px; margin-bottom: 32px; }
+
+  .input-group { text-align: left; margin-bottom: 20px; }
+  label { display: block; font-size: 13px; font-weight: 700; color: var(--secondary); margin-bottom: 8px; margin-left: 4px; }
   input {
-    width: 100%;
-    padding: 13px 16px;
-    border: 2px solid #e8e8e8;
-    border-radius: 10px;
-    font-size: 15px;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 16px;
+    width: 100%; padding: 16px 20px; background: rgba(255,255,255,0.5);
+    border: 2px solid rgba(0,0,0,0.05); border-radius: 16px; font-size: 15px; outline: none;
+    transition: all 0.3s; font-family: inherit;
   }
-  input:focus { border-color: #1a237e; }
-  .btn {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, #1a237e, #283593);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
-    margin-top: 4px;
+  input:focus { border-color: var(--secondary); background: white; box-shadow: 0 5px 15px rgba(26,35,126,0.1); }
+
+  .btn-login {
+    width: 100%; padding: 18px; background: linear-gradient(135deg, #1a237e, #311b92);
+    color: white; border: none; border-radius: 18px; font-size: 17px; font-weight: 800;
+    cursor: pointer; transition: all 0.3s; margin-top: 10px;
+    box-shadow: 0 8px 20px rgba(26,35,126,0.3);
   }
-  .btn:hover { opacity: 0.92; }
-  .btn:active { transform: scale(0.98); }
-  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-  .error {
-    background: #ffebee;
-    border: 1px solid #ffcdd2;
-    color: #c62828;
-    border-radius: 8px;
-    padding: 12px 14px;
-    font-size: 14px;
-    margin-top: 12px;
-    display: none;
+  .btn-login:active { transform: scale(0.98); }
+  .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .error-box {
+    margin-top: 20px; padding: 12px; border-radius: 12px; background: rgba(198, 40, 40, 0.1);
+    color: var(--primary); font-size: 13px; font-weight: 600; display: none;
   }
+
   .spinner {
-    display: inline-block;
-    width: 18px; height: 18px;
-    border: 2px solid rgba(255,255,255,0.4);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    vertical-align: middle;
-    margin-right: 6px;
+    display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%; border-top-color: white; animation: spin 0.8s ease-in-out infinite;
+    vertical-align: middle; margin-right: 10px;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
-<div class="card">
-  <div class="logo">
-    <span class="logo-icon">🔥</span>
-    <h1>Hệ thống Kiểm tra<br>Thiết bị PCCC</h1>
-    <p>Vui lòng đăng nhập để tiếp tục</p>
+  <div class="shape shape-1"></div>
+  <div class="shape shape-2"></div>
+
+  <div class="glass-card">
+    <div class="logo-icon">🛡️</div>
+    <h1>HỆ THỐNG PCCC</h1>
+    <p class="subtitle">Đăng nhập để thực hiện kiểm tra</p>
+
+    <div class="input-group">
+      <label>TÀI KHOẢN</label>
+      <input type="text" id="username" placeholder="Nhập tên đăng nhập" autocomplete="off">
+    </div>
+
+    <div class="input-group">
+      <label>MẬT KHẨU</label>
+      <input type="password" id="password" placeholder="••••••••" onkeypress="if(event.key==='Enter') doLogin()">
+    </div>
+
+    <button class="btn-login" id="loginBtn" onclick="doLogin()">ĐĂNG NHẬP</button>
+    
+    <div class="error-box" id="errorMsg"></div>
   </div>
-  <hr class="divider">
-  <label for="username">Tài khoản</label>
-  <input type="text" id="username" placeholder="Nhập tên đăng nhập" autocomplete="username">
-  <label for="password">Mật khẩu</label>
-  <input type="password" id="password" placeholder="Nhập mật khẩu" autocomplete="current-password" onkeypress="if(event.key==='Enter') doLogin()">
-  <button class="btn" id="loginBtn" onclick="doLogin()">Đăng nhập</button>
-  <div class="error" id="errorMsg"></div>
-</div>
 
-<script src="api.js"></script>
-<script>
-  const params = new URLSearchParams(window.location.search);
-  const URL_DEVICE = params.get('device') || '';
-  const URL_RETURN = params.get('returnUrl') || '';
+  <script src="api.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const URL_DEVICE = params.get('device') || '';
+    const URL_RETURN = params.get('returnUrl') || '';
 
-  // Kiểm tra session đã login chưa
-  (function() {
-    const session = localStorage.getItem('pccc_session');
-    if (session) {
-      try {
-        const user = JSON.parse(session);
-        if (user.vaiTro === 'Admin' || user.vaiTro === 'HSE') {
-          window.location.href = 'Admin.html';
-        } else if (URL_RETURN) {
-          window.location.href = URL_RETURN;
-        } else if (URL_DEVICE) {
-          window.location.href = 'index.html?device=' + encodeURIComponent(URL_DEVICE);
-        }
-      } catch(e) { localStorage.removeItem('pccc_session'); }
-    }
-  })();
+    async function doLogin() {
+      const u = document.getElementById('username').value.trim();
+      const p = document.getElementById('password').value.trim();
+      const err = document.getElementById('errorMsg');
+      const btn = document.getElementById('loginBtn');
 
-  async function doLogin() {
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const errEl = document.getElementById('errorMsg');
-    const btn = document.getElementById('loginBtn');
-
-    if (!username || !password) {
-      showError('Vui lòng nhập tài khoản và mật khẩu.');
-      return;
-    }
-
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span>Đang đăng nhập...';
-    errEl.style.display = 'none';
-
-    try {
-      const res = await callAPI('login', { username, password });
-      
-      btn.disabled = false;
-      btn.innerHTML = 'Đăng nhập';
-      
-      if (res.success) {
-        localStorage.setItem('pccc_session', JSON.stringify(res.user));
-
-        if (URL_DEVICE) {
-          window.location.href = 'index.html?device=' + encodeURIComponent(URL_DEVICE);
-        } else if (res.user.vaiTro === 'Admin' || res.user.vaiTro === 'HSE') {
-          window.location.href = 'Admin.html';
-        } else if (URL_RETURN) {
-          window.location.href = URL_RETURN;
-        } else {
-          window.location.href = 'index.html';
-        }
-      } else {
-        showError(res.message);
+      if (!u || !p) {
+        showError('Vui lòng nhập đầy đủ thông tin');
+        return;
       }
-    } catch(err) {
-      btn.disabled = false;
-      btn.innerHTML = 'Đăng nhập';
-      showError('Lỗi kết nối: ' + err.message);
-    }
-  }
 
-  function showError(msg) {
-    const el = document.getElementById('errorMsg');
-    el.textContent = msg;
-    el.style.display = 'block';
-  }
-</script>
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Đang xử lý...';
+      err.style.display = 'none';
+
+      try {
+        const res = await callAPI('login', { username: u, password: p });
+        if (res.success) {
+          localStorage.setItem('user', JSON.stringify(res.user));
+          if (URL_DEVICE) window.location.href = 'index.html?device=' + encodeURIComponent(URL_DEVICE);
+          else if (['Admin', 'HSE'].includes(res.user.vaiTro)) window.location.href = 'Admin.html';
+          else window.location.href = 'index.html';
+        } else {
+          showError(res.message);
+          btn.disabled = false;
+          btn.innerHTML = 'ĐĂNG NHẬP';
+        }
+      } catch(e) {
+        showError('Không thể kết nối đến máy chủ');
+        btn.disabled = false;
+        btn.innerHTML = 'ĐĂNG NHẬP';
+      }
+    }
+
+    function showError(m) {
+      const e = document.getElementById('errorMsg');
+      e.innerText = m; e.style.display = 'block';
+    }
+  </script>
 </body>
 </html>

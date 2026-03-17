@@ -2,197 +2,232 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Kiểm tra Đèn Chiếu Sáng</title>
 <style>
-  :root { --primary: #1a237e; --secondary: #c62828; --bg: #f5f7fa; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; }
-  .header { background: var(--primary); color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 25px 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
-  .container { max-width: 500px; margin: 0 auto; padding: 0 15px; }
-  .info-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-  .info-card h2 { font-size: 18px; color: var(--primary); margin-bottom: 12px; border-bottom: 2px solid #eee; padding-bottom: 8px; }
-  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px; }
-  .info-item { color: #666; }
-  .info-value { font-weight: 600; color: #333; }
-  .form-group { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-  .form-group label { display: block; font-weight: 600; font-size: 15px; margin-bottom: 15px; color: #444; }
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --primary: #c62828;
+    --secondary: #1a237e;
+    --accent: #2e7d32;
+    --text: #1a1a1a;
+  }
+
+  body {
+    font-family: 'Outfit', 'Inter', -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background-attachment: fixed;
+    color: var(--text);
+    padding-bottom: 40px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .header {
+    background: rgba(198, 40, 40, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    color: white; padding: 20px; display: flex; align-items: center; gap: 15px;
+    position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+  .header-icon { font-size: 32px; }
+  .header h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+
+  .glass-card {
+    background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border); border-radius: 24px; margin: 16px; padding: 24px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+  }
+
+  .device-card { border-left: 6px solid var(--primary); }
+  .device-name { font-size: 22px; font-weight: 800; color: var(--secondary); margin-bottom: 12px; }
+  .device-meta span {
+    font-size: 13px; background: rgba(26, 35, 126, 0.08); padding: 6px 14px;
+    border-radius: 12px; color: var(--secondary); font-weight: 600; margin-right: 8px;
+  }
+
+  .section-title { font-size: 16px; font-weight: 800; color: var(--secondary); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .question { margin-bottom: 24px; }
+  .question-label { font-size: 16px; font-weight: 700; color: #333; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .question-num { background: var(--secondary); color: white; width: 26px; height: 26px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+
   .radio-group { display: flex; gap: 12px; }
-  .radio-btn { flex: 1; padding: 12px; text-align: center; border: 2px solid #eee; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; }
-  .selected-ok { border-color: #4caf50; background: #e8f5e9; color: #2e7d32; }
-  .selected-err { border-color: #f44336; background: #ffeeb3; color: #c62828; }
-  .photo-box { width: 100%; border: 2px dashed #ccc; border-radius: 15px; padding: 30px 20px; text-align: center; cursor: pointer; background: #fafafa; }
-  .preview-img { width: 100%; border-radius: 12px; display: none; margin-top: 15px; }
-  textarea { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 12px; font-family: inherit; font-size: 14px; outline: none; margin-top: 10px; resize: none; }
-  .btn-submit { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 15px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(26,35,126,0.3); margin-top: 10px; }
-  .btn-submit:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
-  #uploadProgress { display: none; width: 100%; height: 6px; background: #eee; border-radius: 3px; margin-top: 10px; overflow: hidden; }
-  #progressFill { width: 0%; height: 100%; background: #4caf50; transition: width 0.3s; }
-  .success-screen { display: none; text-align: center; padding: 60px 20px; }
-  .success-icon { font-size: 70px; margin-bottom: 20px; }
-  .status-badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: 600; font-size: 14px; margin-top: 10px; }
-  .status-badge.tot { background: #e8f5e9; color: #2e7d32; }
-  .status-badge.loi { background: #ffebee; color: #c62828; }
-  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 25px; font-size: 14px; z-index: 1000; display: none; }
+  .radio-btn {
+    flex: 1; padding: 16px; border: 2px solid rgba(0,0,0,0.05); background: rgba(255,255,255,0.5);
+    border-radius: 16px; text-align: center; cursor: pointer; font-weight: 700; transition: all 0.25s;
+  }
+  .selected-ok { background: #e8f5e9; border-color: var(--accent); color: #1b5e20; }
+  .selected-err { background: #ffebee; border-color: var(--primary); color: #b71c1c; }
+
+  .upload-area {
+    background: rgba(255,255,255,0.4); border: 2px dashed rgba(0,0,0,0.1); border-radius: 20px;
+    padding: 32px 20px; text-align: center; cursor: pointer;
+  }
+  textarea { width: 100%; border-radius: 16px; padding: 16px; background: rgba(255,255,255,0.5); border: 2px solid rgba(0,0,0,0.05); min-height: 100px; font-family: inherit; }
+  
+  .btn-submit {
+    width: 100%; padding: 20px; background: linear-gradient(135deg, #1a237e, #311b92);
+    color: white; border: none; border-radius: 20px; font-size: 18px; font-weight: 800;
+  }
+  .btn-submit:disabled { opacity: 0.5; }
+
+  .success-overlay {
+    position: fixed; inset: 0; background: var(--secondary); display: none;
+    flex-direction: column; align-items: center; justify-content: center; z-index: 1000;
+  }
 </style>
 </head>
 <body>
-
-<div id="mainContent">
   <div class="header">
-    <h1 id="deviceName">Đèn Chiếu Sáng</h1>
-    <p id="inspectorName">Đang tải...</p>
+    <div class="header-icon">💡</div>
+    <h1>KIỂM TRA ĐÈN CHIẾU SÁNG</h1>
   </div>
-  <div class="container">
-    <div class="info-card">
-      <h2 id="deviceCode">Mã: --</h2>
-      <div class="info-grid">
-        <div><span class="info-item">Xưởng:</span><br><span class="info-value" id="deviceXuong">--</span></div>
-        <div><span class="info-item">Vị trí:</span><br><span class="info-value" id="deviceViTri">--</span></div>
+
+  <div id="loading" class="glass-card" style="text-align:center">⏳ Đang tải thiết bị...</div>
+
+  <div id="mainContent" style="display:none">
+    <div class="glass-card device-card">
+      <div id="deviceName" class="device-name">--</div>
+      <div class="device-meta">
+        <span id="deviceIdBadge">ID: --</span>
+        <span id="deviceLocation">Vị trí: --</span>
       </div>
     </div>
-    <div class="form-group">
-      <label>1. Đèn sáng (Cắm điện đèn có sáng không?)</label>
-      <div class="radio-group">
-        <div class="radio-btn" id="ds_dat" onclick="selectOption('denSang', 'Đạt', 'ok')">Đạt</div>
-        <div class="radio-btn" id="ds_loi" onclick="selectOption('denSang', 'Lỗi', 'err')">Lỗi</div>
+
+    <form id="inspectionForm">
+      <div class="glass-card">
+        <div class="section-title">📋 CÂU HỎI KIỂM TRA</div>
+        
+        <div class="question">
+          <div class="question-label"><div class="question-num">1</div> Đèn sáng (Cắm điện đèn có sáng không?)</div>
+          <div class="radio-group" data-name="denSang">
+            <div class="radio-btn" data-value="Đạt">Đạt</div>
+            <div class="radio-btn" data-value="Lỗi">Lỗi</div>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-label"><div class="question-num">2</div> Gắn chắc (Có bị lỏng lẻo không?)</div>
+          <div class="radio-group" data-name="gangChac">
+            <div class="radio-btn" data-value="Đạt">Đạt</div>
+            <div class="radio-btn" data-value="Lỗi">Lỗi</div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="form-group">
-      <label>2. Gắn chắc (Có bị lỏng lẻo, sắp rơi không?)</label>
-      <div class="radio-group">
-        <div class="radio-btn" id="gc_dat" onclick="selectOption('gangChac', 'Đạt', 'ok')">Đạt</div>
-        <div class="radio-btn" id="gc_loi" onclick="selectOption('gangChac', 'Lỗi', 'err')">Lỗi</div>
+
+      <div class="glass-card">
+        <div class="section-title">📸 HÌNH ẢNH MINH CHỨNG</div>
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+          <div id="uploadText">Nhấn để chụp ảnh</div>
+          <img id="previewImg" style="width:100%; border-radius:15px; margin-top:15px; display:none">
+          <div id="uploadProgress" style="display:none; margin-top:10px">
+            <div style="height:6px; background:rgba(0,0,0,0.1); border-radius:3px; overflow:hidden">
+              <div id="progressFill" style="height:100%; background:var(--secondary); width:0%"></div>
+            </div>
+          </div>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" capture="camera" style="display:none">
       </div>
-    </div>
-    <div class="form-group">
-      <label>3. Chụp ảnh hiện trạng *</label>
-      <div class="photo-box" onclick="document.getElementById('fileInput').click()">
-        <span style="font-size:30px">📷</span><br>
-        <input type="file" id="fileInput" accept="image/*" capture="environment" style="display:none" onchange="handleFileSelect(this)">
-        <img id="previewImg" class="preview-img">
-        <div id="uploadProgress"><div id="progressFill"></div></div>
+
+      <div class="glass-card">
+        <textarea id="note" placeholder="Ghi chú thêm..."></textarea>
       </div>
-    </div>
-    <div class="form-group">
-      <label>4. Ghi chú thêm</label>
-      <textarea id="ghiChu" rows="3"></textarea>
-    </div>
-    <button class="btn-submit" id="submitBtn" onclick="submitForm()" disabled>🚀 Gửi kết quả kiểm tra</button>
+
+      <div style="padding: 16px">
+        <button type="submit" id="submitBtn" class="btn-submit" disabled>GỬI KẾT QUẢ</button>
+      </div>
+    </form>
   </div>
-</div>
 
-<div class="success-screen" id="successScreen">
-  <div class="success-icon" id="successIcon">✅</div>
-  <h2>Gửi thành công!</h2>
-  <div id="statusBadge" class="status-badge">Tình trạng: Tốt</div>
-  <button class="btn-submit" style="margin-top:30px;background:#eee;color:#333;box-shadow:none" onclick="location.reload()">Kiểm tra tiếp</button>
-</div>
-<div class="toast" id="toast"></div>
+  <div id="successOverlay" class="success-overlay">
+    <div style="font-size:80px">✅</div>
+    <h2 style="color:white; margin: 20px 0">THÀNH CÔNG!</h2>
+    <button onclick="window.location.reload()" class="btn-submit" style="background:white; color:var(--secondary); width:auto; padding: 15px 40px">TIẾP TỤC</button>
+  </div>
 
-<script src="api.js"></script>
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  var DEVICE_CODE = urlParams.get('device') || '';
-  var currentUser = null;
-  var uploadedImageUrl = '';
-  (function() {
-    var session = localStorage.getItem('pccc_session');
-    if (!session) { window.location.href = 'Login.html?device=' + encodeURIComponent(DEVICE_CODE); return; }
-    try { currentUser = JSON.parse(session); } catch(e) { window.location.href = 'Login.html'; }
-  })();
+  <script src="api.js"></script>
+  <script>
+    let deviceData = null;
+    let selectedImage = null;
 
-var answers = { denSang: null, gangChac: null };
-var deviceInfo = {};
-var CLOUDINARY_URL = '';
-var UPLOAD_PRESET = '';
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const deviceId = urlParams.get('id');
+      if (!deviceId) return alert("Thiếu ID thiết bị");
 
-window.onload = async function() {
-  if (!currentUser) return;
-  document.getElementById('inspectorName').textContent = '👤 ' + currentUser.hoTen;
-  try {
-    const res = await callAPI('getDeviceInfo', { deviceCode: DEVICE_CODE });
-    if (res.success) {
-      deviceInfo = res.device;
-      document.getElementById('deviceName').textContent = 'Đèn Chiếu Sáng: ' + deviceInfo.maThietBi;
-      document.getElementById('deviceCode').textContent = 'Mã: ' + deviceInfo.maThietBi;
-      document.getElementById('deviceXuong').textContent = deviceInfo.xuong;
-      document.getElementById('deviceViTri').textContent = deviceInfo.viTri;
-    }
-    const cfgRes = await callAPI('getCloudinaryConfig');
-    if (cfgRes.success) {
-      CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/' + cfgRes.data.cloudName + '/image/upload';
-      UPLOAD_PRESET = cfgRes.data.uploadPreset;
-    }
-  } catch(err) { showToast('❌ Lỗi tải dữ liệu', 'error'); }
-};
+      try {
+        const res = await callAPI('getDeviceInfo', { id: deviceId });
+        if (res.success) {
+          deviceData = res.data;
+          document.getElementById('deviceName').innerText = deviceData.ten;
+          document.getElementById('deviceIdBadge').innerText = "ID: " + deviceData.id;
+          document.getElementById('deviceLocation').innerText = "Vị trí: " + deviceData.viTri;
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('mainContent').style.display = 'block';
+        }
+      } catch (err) { alert("Lỗi tải thông tin"); }
+    });
 
-function selectOption(field, value, type) {
-  answers[field] = value;
-  var prefixMap = { denSang: 'ds', gangChac: 'gc' };
-  var prefix = prefixMap[field];
-  document.querySelectorAll('[id^="' + prefix + '_"]').forEach(b => b.className = 'radio-btn');
-  var idMap = { denSang: {'Đạt':'ds_dat','Lỗi':'ds_loi'}, gangChac: {'Đạt':'gc_dat','Lỗi':'gc_loi'}};
-  document.getElementById(idMap[field][value]).className = 'radio-btn ' + (type === 'ok' ? 'selected-ok' : 'selected-err');
-  checkFormComplete();
-}
-function checkFormComplete() {
-  var allOK = answers.denSang && answers.gangChac;
-  document.getElementById('submitBtn').disabled = !(allOK && uploadedImageUrl);
-}
-function handleFileSelect(input) {
-  var file = input.files[0]; if(!file) return;
-  var reader = new FileReader();
-  reader.onload = e => {
-    var img = new Image();
-    img.onload = () => {
-      var canvas = document.createElement('canvas');
-      var MAX = 1000; var ratio = Math.min(MAX/img.width, MAX/img.height, 1);
-      canvas.width = img.width*ratio; canvas.height = img.height*ratio;
-      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-      document.getElementById('previewImg').src = canvas.toDataURL('image/jpeg', 0.85);
-      document.getElementById('previewImg').style.display = 'block';
-      canvas.toBlob(blob => uploadToCloudinary(blob), 'image/jpeg', 0.85);
+    document.querySelectorAll('.radio-group').forEach(group => {
+      group.querySelectorAll('.radio-btn').forEach(btn => {
+        btn.onclick = () => {
+          group.querySelectorAll('.radio-btn').forEach(b => b.classList.remove('selected-ok', 'selected-err'));
+          btn.classList.add(btn.getAttribute('data-value') === 'Đạt' ? 'selected-ok' : 'selected-err');
+          checkFormValid();
+        };
+      });
+    });
+
+    document.getElementById('fileInput').onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        selectedImage = file;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const preview = document.getElementById('previewImg');
+          preview.src = ev.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+        checkFormValid();
+      }
     };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-function uploadToCloudinary(blob) {
-  if (!CLOUDINARY_URL) return;
-  var fill = document.getElementById('progressFill');
-  document.getElementById('uploadProgress').style.display = 'block';
-  var formData = new FormData();
-  formData.append('file', blob, 'dcs_' + Date.now() + '.jpg');
-  formData.append('upload_preset', UPLOAD_PRESET);
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', CLOUDINARY_URL, true);
-  xhr.upload.onprogress = e => { if(e.lengthComputable) fill.style.width = Math.round(e.loaded/e.total*100) + '%'; };
-  xhr.onload = () => {
-    document.getElementById('uploadProgress').style.display = 'none';
-    if(xhr.status === 200) { uploadedImageUrl = JSON.parse(xhr.responseText).secure_url; checkFormComplete(); }
-  };
-  xhr.send(formData);
-}
-async function submitForm() {
-  var btn = document.getElementById('submitBtn'); btn.disabled = true;
-  var formData = {
-    maThietBi: DEVICE_CODE, xuong: deviceInfo.xuong || '', viTri: deviceInfo.viTri || '',
-    denSang: answers.denSang, gangChac: answers.gangChac,
-    tenNguoiKiemTra: currentUser.hoTen, hinhAnhUrl: uploadedImageUrl, ghiChu: document.getElementById('ghiChu').value
-  };
-  try {
-    const res = await callAPI('submitDenChieuSangInspection', { formData: formData });
-    if (res.success) {
-      document.getElementById('mainContent').style.display = 'none';
-      document.getElementById('successScreen').style.display = 'block';
-      var isLoi = res.tinhTrang === 'Lỗi';
-      var b = document.getElementById('statusBadge'); b.textContent = 'Tình trạng: ' + res.tinhTrang;
-      b.className = 'status-badge ' + (isLoi ? 'loi' : 'tot');
-    } else { btn.disabled = false; showToast('❌ Lỗi gửi'); }
-  } catch(e) { btn.disabled = false; }
-}
-function showToast(m, t) { var tst = document.getElementById('toast'); tst.textContent = m; tst.style.display = 'block'; setTimeout(() => tst.style.display='none', 3000); }
-</script>
+
+    function checkFormValid() {
+      const answered = document.querySelectorAll('.selected-ok, .selected-err').length;
+      document.getElementById('submitBtn').disabled = !(answered === 2 && selectedImage);
+    }
+
+    document.getElementById('inspectionForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.innerText = "ĐANG GỬI..."; btn.disabled = true;
+
+      try {
+        document.getElementById('uploadProgress').style.display = 'block';
+        const imageUrl = await uploadImage(selectedImage, 'pccc_lighting', (pct) => {
+          document.getElementById('progressFill').style.width = pct + "%";
+        });
+
+        const user = JSON.parse(localStorage.getItem('user') || '{"hoTen":"Ẩn danh"}');
+        const answers = {};
+        document.querySelectorAll('.radio-group').forEach(g => {
+          answers[g.getAttribute('data-name')] = g.querySelector('.selected-ok, .selected-err').getAttribute('data-value');
+        });
+
+        const payload = {
+          maThietBi: deviceData.id,
+          denSang: answers.denSang,
+          gangChac: answers.gangChac,
+          tinhTrang: Object.values(answers).every(v => v === 'Đạt') ? 'Tốt' : 'Cần xử lý',
+          tenNguoiKiemTra: user.hoTen,
+          hinhAnhUrl: imageUrl,
+          ghiChu: document.getElementById('note').value
+        };
+
+        const res = await callAPI('submitDenChieuSangInspection', { formData: payload });
+        if (res.success) document.getElementById('successOverlay').style.display = 'flex';
+        else alert("Lỗi: " + res.message);
+      } catch (err) { alert("Lỗi hệ thống"); btn.disabled = false; }
+    };
+  </script>
 </body>
 </html>
