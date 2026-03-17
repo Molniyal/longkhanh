@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đăng nhập - Hệ thống PCCC</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1a237e 0%, #c62828 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 40px 36px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .logo {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .logo-icon {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .logo h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a237e;
+    line-height: 1.3;
+  }
+  .logo p {
+    font-size: 13px;
+    color: #888;
+    margin-top: 4px;
+  }
+  .divider {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 20px 0;
+  }
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 6px;
+  }
+  input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 2px solid #e8e8e8;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 16px;
+  }
+  input:focus { border-color: #1a237e; }
+  .btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #1a237e, #283593);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: 4px;
+  }
+  .btn:hover { opacity: 0.92; }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .error {
+    background: #ffebee;
+    border: 1px solid #ffcdd2;
+    color: #c62828;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 14px;
+    margin-top: 12px;
+    display: none;
+  }
+  .spinner {
+    display: inline-block;
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <span class="logo-icon">🔥</span>
+    <h1>Hệ thống Kiểm tra<br>Thiết bị PCCC</h1>
+    <p>Vui lòng đăng nhập để tiếp tục</p>
+  </div>
+  <hr class="divider">
+  <label for="username">Tài khoản</label>
+  <input type="text" id="username" placeholder="Nhập tên đăng nhập" autocomplete="username">
+  <label for="password">Mật khẩu</label>
+  <input type="password" id="password" placeholder="Nhập mật khẩu" autocomplete="current-password" onkeypress="if(event.key==='Enter') doLogin()">
+  <button class="btn" id="loginBtn" onclick="doLogin()">Đăng nhập</button>
+  <div class="error" id="errorMsg"></div>
+</div>
+
+<script src="api.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const URL_DEVICE = params.get('device') || '';
+  const URL_RETURN = params.get('returnUrl') || '';
+
+  // Kiểm tra session đã login chưa
+  (function() {
+    const session = localStorage.getItem('pccc_session');
+    if (session) {
+      try {
+        const user = JSON.parse(session);
+        if (user.vaiTro === 'Admin' || user.vaiTro === 'HSE') {
+          window.location.href = 'Admin.html';
+        } else if (URL_RETURN) {
+          window.location.href = URL_RETURN;
+        } else if (URL_DEVICE) {
+          window.location.href = 'index.html?device=' + encodeURIComponent(URL_DEVICE);
+        }
+      } catch(e) { localStorage.removeItem('pccc_session'); }
+    }
+  })();
+
+  async function doLogin() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const errEl = document.getElementById('errorMsg');
+    const btn = document.getElementById('loginBtn');
+
+    if (!username || !password) {
+      showError('Vui lòng nhập tài khoản và mật khẩu.');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Đang đăng nhập...';
+    errEl.style.display = 'none';
+
+    try {
+      const res = await callAPI('login', { username, password });
+      
+      btn.disabled = false;
+      btn.innerHTML = 'Đăng nhập';
+      
+      if (res.success) {
+        localStorage.setItem('pccc_session', JSON.stringify(res.user));
+
+        if (URL_DEVICE) {
+          window.location.href = 'index.html?device=' + encodeURIComponent(URL_DEVICE);
+        } else if (res.user.vaiTro === 'Admin' || res.user.vaiTro === 'HSE') {
+          window.location.href = 'Admin.html';
+        } else if (URL_RETURN) {
+          window.location.href = URL_RETURN;
+        } else {
+          window.location.href = 'index.html';
+        }
+      } else {
+        showError(res.message);
+      }
+    } catch(err) {
+      btn.disabled = false;
+      btn.innerHTML = 'Đăng nhập';
+      showError('Lỗi kết nối: ' + err.message);
+    }
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+</script>
+</body>
+</html>

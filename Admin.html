@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard PCCC - Admin</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; }
+
+  /* Sidebar */
+  .sidebar {
+    width: 240px; background: #1a237e; color: white;
+    position: fixed; top: 0; left: 0; height: 100vh;
+    padding: 24px 0; z-index: 100;
+    display: flex; flex-direction: column;
+  }
+  .sidebar-logo { padding: 0 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.15); }
+  .sidebar-logo h2 { font-size: 16px; font-weight: 700; line-height: 1.3; }
+  .sidebar-logo p { font-size: 12px; opacity: 0.7; margin-top: 4px; }
+  .sidebar-menu { flex: 1; padding-top: 16px; }
+  .menu-item {
+    padding: 13px 20px;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px;
+    transition: background 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .menu-item:hover { background: rgba(255,255,255,0.1); }
+  .menu-item.active { background: rgba(255,255,255,0.15); border-left-color: #ff8a65; font-weight: 600; }
+  .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.15); }
+  .user-info { font-size: 13px; opacity: 0.9; margin-bottom: 10px; }
+  .btn-logout {
+    width: 100%; padding: 9px;
+    background: rgba(255,255,255,0.15);
+    color: white; border: none; border-radius: 6px;
+    cursor: pointer; font-size: 13px;
+  }
+  .btn-logout:hover { background: rgba(255,255,255,0.25); }
+
+  /* Main content */
+  .main { margin-left: 240px; min-height: 100vh; }
+  .topbar {
+    background: white; padding: 16px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topbar h1 { font-size: 20px; font-weight: 700; color: #1a237e; }
+  .topbar .date-info { font-size: 13px; color: #888; }
+
+  .content { padding: 24px 28px; }
+
+  /* Stats cards */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-card {
+    background: white; border-radius: 12px; padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex; align-items: center; gap: 14px;
+  }
+  .stat-icon { font-size: 32px; }
+  .stat-value { font-size: 28px; font-weight: 700; color: #1a237e; }
+  .stat-label { font-size: 12px; color: #888; margin-top: 2px; }
+  .stat-card.stat-loi .stat-value { color: #c62828; }
+  .stat-card.stat-tot .stat-value { color: #2e7d32; }
+
+  /* Filters */
+  .filter-bar {
+    background: white; border-radius: 12px; padding: 16px 20px;
+    margin-bottom: 20px;
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .filter-bar label { font-size: 13px; font-weight: 600; color: #555; }
+  .filter-bar select, .filter-bar input {
+    padding: 8px 12px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 13px;
+    outline: none;
+    background: white;
+    cursor: pointer;
+  }
+  .filter-bar select:focus, .filter-bar input:focus { border-color: #1a237e; }
+  .btn-filter {
+    padding: 9px 20px;
+    background: #1a237e; color: white;
+    border: none; border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-filter:hover { opacity: 0.9; }
+
+  /* Table */
+  .table-container {
+    background: white; border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+  .table-header {
+    padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .table-header h3 { font-size: 16px; font-weight: 700; color: #1a237e; }
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: #1a237e; color: white;
+    padding: 12px 14px; text-align: left;
+    font-size: 12px; font-weight: 600;
+    white-space: nowrap;
+  }
+  td {
+    padding: 11px 14px;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: 13px; color: #333;
+    white-space: nowrap;
+  }
+  tr:hover td { background: #fafafa; }
+  tr.row-loi td { background: #fff5f5; }
+  tr.row-loi:hover td { background: #ffeeee; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px; border-radius: 12px;
+    font-size: 12px; font-weight: 600;
+  }
+  .badge-tot { background: #e8f5e9; color: #2e7d32; }
+  .badge-loi { background: #ffebee; color: #c62828; }
+
+  .img-thumb {
+    width: 48px; height: 36px; object-fit: cover;
+    border-radius: 4px; cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .img-thumb:hover { transform: scale(1.1); }
+
+  .loading { text-align: center; padding: 40px; color: #888; font-size: 14px; }
+  .empty { text-align: center; padding: 60px 20px; color: #bbb; }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; display: block; }
+
+  /* Modal ảnh */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85); z-index: 1000;
+    justify-content: center; align-items: center;
+    padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-overlay img { max-width: 100%; max-height: 90vh; border-radius: 8px; }
+  .modal-close {
+    position: absolute; top: 20px; right: 20px;
+    color: white; font-size: 28px; cursor: pointer;
+    background: rgba(0,0,0,0.4); border: none;
+    border-radius: 50%; width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* User management tab */
+  .user-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .user-list-card, .user-add-card {
+    background: white; border-radius: 12px; padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .user-list-card h3, .user-add-card h3 {
+    font-size: 16px; font-weight: 700; color: #1a237e;
+    margin-bottom: 16px;
+  }
+  .user-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px;
+    border: 1px solid #f0f0f0; border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  .user-row-info { font-size: 13px; }
+  .user-row-info .name { font-weight: 600; color: #222; }
+  .user-row-info .meta { color: #888; font-size: 12px; margin-top: 2px; }
+  .role-badge {
+    font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600;
+  }
+  .role-Admin { background: #e8eaf6; color: #3949ab; }
+  .role-HSE { background: #e0f2f1; color: #00695c; }
+  .role-Staff { background: #fff3e0; color: #e65100; }
+  .btn-del {
+    padding: 5px 12px; background: #ffebee; color: #c62828;
+    border: none; border-radius: 6px; cursor: pointer; font-size: 12px;
+  }
+  .form-group { margin-bottom: 12px; }
+  .form-group label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 5px; }
+  .form-group input, .form-group select {
+    width: 100%; padding: 9px 12px;
+    border: 1.5px solid #e0e0e0; border-radius: 8px;
+    font-size: 13px; outline: none;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: #1a237e; }
+  .btn-add-user {
+    width: 100%; padding: 11px;
+    background: #1a237e; color: white; border: none;
+    border-radius: 8px; font-size: 14px; font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+    .sidebar.open { transform: none; }
+    .main { margin-left: 0; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .user-grid { grid-template-columns: 1fr; }
+    .topbar h1 { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div style="font-size:28px;margin-bottom:8px">🔥</div>
+    <h2>Hệ thống PCCC</h2>
+    <p>Quản lý & Giám sát</p>
+  </div>
+  <div class="sidebar-menu">
+    <div class="menu-item active" onclick="showTab('dashboard')">📊 Dashboard</div>
+    <div class="menu-item" onclick="showTab('bcc')">🧯 Bình chữa cháy</div>
+    <div class="menu-item" onclick="showTab('tcc')">🚒 Tủ chữa cháy</div>
+    <div class="menu-item" onclick="showTab('den')">💡 Đèn PCCC</div>
+    <div class="menu-item" id="userMenuItem" onclick="showTab('users')" style="display:none">👥 Quản lý User</div>
+  </div>
+  <div class="sidebar-footer">
+    <div class="user-info" id="sidebarUser">Đang tải...</div>
+    <button class="btn-logout" onclick="logout()">🚪 Đăng xuất</button>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <div class="topbar">
+    <h1 id="pageTitle">📊 Dashboard Tổng quan</h1>
+    <div class="date-info" id="currentDate"></div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD TAB -->
+    <div id="tab-dashboard">
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card"><div class="stat-icon">📋</div><div><div class="stat-value" id="statTotal">-</div><div class="stat-label">Tổng lượt kiểm tra</div></div></div>
+        <div class="stat-card stat-tot"><div class="stat-icon">✅</div><div><div class="stat-value" id="statTot">-</div><div class="stat-label">Tốt</div></div></div>
+        <div class="stat-card stat-loi"><div class="stat-icon">❌</div><div><div class="stat-value" id="statLoi">-</div><div class="stat-label">Lỗi cần xử lý</div></div></div>
+        <div class="stat-card"><div class="stat-icon">📅</div><div><div class="stat-value" id="statToday">-</div><div class="stat-label">Kiểm tra hôm nay</div></div></div>
+      </div>
+
+      <div class="filter-bar">
+        <label>Xưởng:</label>
+        <select id="filterXuong">
+          <option value="">Tất cả</option>
+        </select>
+        <label>Tình trạng:</label>
+        <select id="filterTinhTrang">
+          <option value="">Tất cả</option>
+          <option value="Lỗi">Lỗi</option>
+          <option value="Tốt">Tốt</option>
+        </select>
+        <button class="btn-filter" onclick="loadDashboard()">🔍 Lọc</button>
+        <button class="btn-filter" style="background:#546e7a" onclick="resetFilter()">↺ Reset</button>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header">
+          <h3>📋 Kết quả kiểm tra gần đây</h3>
+          <span id="rowCount" style="font-size:13px;color:#888"></span>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Ngày giờ</th>
+                <th>Loại TB</th>
+                <th>Mã TB</th>
+                <th>Xưởng</th>
+                <th>Vị trí</th>
+                <th>Tình trạng</th>
+                <th>Người KT</th>
+                <th>Hình ảnh</th>
+                <th>Ghi chú</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <tr><td colspan="9" class="loading">⏳ Đang tải dữ liệu...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- USER MANAGEMENT TAB -->
+    <div id="tab-users" style="display:none">
+      <div class="user-grid">
+        <div class="user-list-card">
+          <h3>👥 Danh sách nhân viên</h3>
+          <div id="userList"><div class="loading">⏳ Đang tải...</div></div>
+        </div>
+        <div class="user-add-card">
+          <h3>➕ Thêm nhân viên mới</h3>
+          <div class="form-group"><label>Họ tên *</label><input id="addHoTen" placeholder="Nguyễn Văn A"></div>
+          <div class="form-group"><label>Tài khoản *</label><input id="addTaiKhoan" placeholder="nv.vana"></div>
+          <div class="form-group"><label>Mật khẩu *</label><input type="password" id="addMatKhau" placeholder="••••••"></div>
+          <div class="form-group"><label>Xưởng</label><input id="addXuong" placeholder="Xưởng A1"></div>
+          <div class="form-group"><label>Bộ phận</label><input id="addBoPhan" placeholder="Sản xuất"></div>
+          <div class="form-group"><label>Email</label><input id="addEmail" type="email" placeholder="email@cty.com"></div>
+          <div class="form-group"><label>Vai trò *</label>
+            <select id="addVaiTro">
+              <option value="Staff">Staff</option>
+              <option value="HSE">HSE Officer</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </div>
+          <button class="btn-add-user" onclick="addUser()">➕ Thêm nhân viên</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Image Modal -->
+<div class="modal-overlay" id="imgModal" onclick="closeModal()">
+  <button class="modal-close" onclick="closeModal()">✕</button>
+  <img id="modalImg" src="" alt="Ảnh hiện trạng">
+</div>
+
+<script src="api.js"></script>
+<script>
+var currentUser = null;
+var allData = [];
+
+(function() {
+  var session = localStorage.getItem('pccc_session');
+  if (!session) {
+    window.location.href = 'Login.html';
+    return;
+  }
+  try {
+    currentUser = JSON.parse(session);
+    if (currentUser.vaiTro === 'Staff') {
+      window.location.href = 'index.html';
+      return;
+    }
+    document.getElementById('sidebarUser').innerHTML = '👤 ' + currentUser.hoTen + '<br><small style="opacity:0.7">' + currentUser.vaiTro + ' | ' + (currentUser.xuong || 'Tất cả xưởng') + '</small>';
+    if (currentUser.vaiTro === 'Admin') {
+      document.getElementById('userMenuItem').style.display = 'flex';
+    }
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('vi-VN', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    loadXuongFilter();
+    loadDashboard();
+  } catch(e) {
+    window.location.href = 'Login.html';
+  }
+})();
+
+function showTab(tab) {
+  ['dashboard','users'].forEach(function(t) {
+    var el = document.getElementById('tab-' + t);
+    if (el) el.style.display = 'none';
+  });
+  var el = document.getElementById('tab-' + tab);
+  if (el) el.style.display = 'block';
+
+  document.querySelectorAll('.menu-item').forEach(function(m) { m.classList.remove('active'); });
+  event.target.classList.add('active');
+
+  var titles = { dashboard:'📊 Dashboard Tổng quan', bcc:'🧯 Bình chữa cháy', tcc:'🚒 Tủ chữa cháy', den:'💡 Đèn PCCC', users:'👥 Quản lý User' };
+  document.getElementById('pageTitle').textContent = titles[tab] || 'Dashboard';
+
+  if (tab === 'users') loadUsers();
+  if (tab === 'dashboard') loadDashboard();
+}
+
+async function loadXuongFilter() {
+  const res = await callAPI('getUniqueXuong');
+  if (!res.success) return;
+  var sel = document.getElementById('filterXuong');
+  res.data.forEach(function(x) {
+    var opt = document.createElement('option');
+    opt.value = x; opt.textContent = x;
+    if (currentUser.vaiTro === 'HSE' && x === currentUser.xuong) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+async function loadDashboard() {
+  var filter = {
+    xuong: document.getElementById('filterXuong').value,
+    tinhTrang: document.getElementById('filterTinhTrang').value,
+  };
+  if (currentUser.vaiTro === 'HSE') filter.xuong = currentUser.xuong;
+
+  document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" class="loading">⏳ Đang tải...</td></tr>';
+
+  try {
+    const res = await callAPI('getDashboardData', { filter: filter });
+    if (!res.success) {
+      document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" class="loading">❌ Lỗi: ' + res.message + '</td></tr>';
+      return;
+    }
+    allData = res.data;
+    document.getElementById('statTotal').textContent = res.stats.total;
+    document.getElementById('statTot').textContent = res.stats.tot;
+    document.getElementById('statLoi').textContent = res.stats.loi;
+    document.getElementById('statToday').textContent = res.stats.today;
+
+    renderTable(res.data);
+    document.getElementById('rowCount').textContent = res.data.length + ' bản ghi';
+  } catch(err) {
+    document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" class="loading">❌ ' + err.message + '</td></tr>';
+  }
+}
+
+function renderTable(data) {
+  if (!data || data.length === 0) {
+    document.getElementById('tableBody').innerHTML = '<tr><td colspan="9"><div class="empty"><span class="empty-icon">🔍</span>Không có dữ liệu phù hợp</div></td></tr>';
+    return;
+  }
+  var html = '';
+  data.slice(0, 100).forEach(function(r) {
+    var isLoi = r['Tình trạng'] === 'Lỗi';
+    html += '<tr class="' + (isLoi ? 'row-loi' : '') + '">';
+    html += '<td>' + (r['Ngày tháng'] || '-') + '</td>';
+    html += '<td>' + (r['Loại thiết bị'] || '-') + '</td>';
+    html += '<td><b>' + (r['Mã thiết bị'] || '-') + '</b></td>';
+    html += '<td>' + (r['Xưởng'] || '-') + '</td>';
+    html += '<td>' + (r['Vị trí'] || '-') + '</td>';
+    html += '<td><span class="badge ' + (isLoi ? 'badge-loi' : 'badge-tot') + '">' + (r['Tình trạng'] || '-') + '</span></td>';
+    html += '<td>' + (r['Tên người kiểm tra'] || '-') + '</td>';
+    var imgUrl = r['Hình ảnh (URL)'];
+    html += '<td>' + (imgUrl ? '<img src="' + imgUrl + '" class="img-thumb" onclick="showImage(\'' + imgUrl + '\')" alt="ảnh">' : '-') + '</td>';
+    html += '<td>' + (r['Ghi chú'] || '-') + '</td>';
+    html += '</tr>';
+  });
+  document.getElementById('tableBody').innerHTML = html;
+}
+
+function resetFilter() {
+  document.getElementById('filterXuong').value = currentUser.vaiTro === 'HSE' ? currentUser.xuong : '';
+  document.getElementById('filterTinhTrang').value = '';
+  loadDashboard();
+}
+
+function showImage(url) {
+  document.getElementById('modalImg').src = url;
+  document.getElementById('imgModal').classList.add('show');
+}
+function closeModal() {
+  document.getElementById('imgModal').classList.remove('show');
+}
+
+async function loadUsers() {
+  document.getElementById('userList').innerHTML = '<div class="loading">⏳ Đang tải...</div>';
+  const res = await callAPI('getAllUsers');
+  if (!res.success) return;
+  var html = '';
+  res.rows.forEach(function(row) {
+    var maNV = row[0], hoTen = row[1], taiKhoan = row[2], xuong = row[4], vaiTro = row[7];
+    html += '<div class="user-row">';
+    html += '<div class="user-row-info"><div class="name">' + hoTen + ' <span class="role-badge role-' + vaiTro + '">' + vaiTro + '</span></div>';
+    html += '<div class="meta">@' + taiKhoan + ' | ' + xuong + '</div></div>';
+    html += '<button class="btn-del" onclick="deleteUser(\'' + maNV + '\')">Xóa</button>';
+    html += '</div>';
+  });
+  document.getElementById('userList').innerHTML = html || '<p style="color:#aaa;font-size:13px">Chưa có nhân viên</p>';
+}
+
+async function addUser() {
+  var userData = {
+    hoTen: document.getElementById('addHoTen').value.trim(),
+    taiKhoan: document.getElementById('addTaiKhoan').value.trim(),
+    matKhau: document.getElementById('addMatKhau').value.trim(),
+    xuong: document.getElementById('addXuong').value.trim(),
+    boPhan: document.getElementById('addBoPhan').value.trim(),
+    email: document.getElementById('addEmail').value.trim(),
+    vaiTro: document.getElementById('addVaiTro').value,
+  };
+  if (!userData.hoTen || !userData.taiKhoan || !userData.matKhau) {
+    alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+    return;
+  }
+  
+  const res = await callAPI('addUser', { userData: userData });
+  alert(res.message);
+  if (res.success) {
+    document.getElementById('addHoTen').value = '';
+    document.getElementById('addTaiKhoan').value = '';
+    document.getElementById('addMatKhau').value = '';
+    loadUsers();
+  }
+}
+
+async function deleteUser(maNV) {
+  if (!confirm('Xác nhận xóa nhân viên ' + maNV + '?')) return;
+  const res = await callAPI('deleteUser', { maNV: maNV });
+  alert(res.message);
+  if (res.success) loadUsers();
+}
+
+function logout() {
+  localStorage.removeItem('pccc_session');
+  window.location.href = 'Login.html';
+}
+</script>
+</body>
+</html>

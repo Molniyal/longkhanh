@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kiểm tra Tủ Chữa Cháy (TCC)</title>
+<style>
+  :root { --primary: #1a237e; --secondary: #c62828; --bg: #f5f7fa; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; }
+  .header { background: var(--primary); color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 25px 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
+  .container { max-width: 500px; margin: 0 auto; padding: 0 15px; }
+  .info-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .info-card h2 { font-size: 18px; color: var(--primary); margin-bottom: 12px; border-bottom: 2px solid #eee; padding-bottom: 8px; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px; }
+  .info-item { color: #666; }
+  .info-value { font-weight: 600; color: #333; }
+  
+  .form-group { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .form-group label { display: block; font-weight: 600; font-size: 15px; margin-bottom: 15px; color: #444; }
+  
+  .radio-group { display: flex; gap: 12px; }
+  .radio-btn { flex: 1; padding: 12px; text-align: center; border: 2px solid #eee; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; }
+  .selected-ok { border-color: #4caf50; background: #e8f5e9; color: #2e7d32; }
+  .selected-err { border-color: #f44336; background: #ffeeb3; color: #c62828; }
+  
+  .photo-box { width: 100%; border: 2px dashed #ccc; border-radius: 15px; padding: 30px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: #fafafa; }
+  .photo-box:active { background: #f0f0f0; transform: scale(0.98); }
+  .preview-img { width: 100%; border-radius: 12px; display: none; margin-top: 15px; }
+  
+  textarea { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 12px; font-family: inherit; font-size: 14px; outline: none; margin-top: 10px; resize: none; }
+  
+  .btn-submit { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 15px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(26,35,126,0.3); transition: all 0.2s; margin-top: 10px; }
+  .btn-submit:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
+  
+  #uploadProgress { display: none; width: 100%; height: 6px; background: #eee; border-radius: 3px; margin-top: 10px; overflow: hidden; }
+  #progressFill { width: 0%; height: 100%; background: #4caf50; transition: width 0.3s; }
+  
+  .success-screen { display: none; text-align: center; padding: 60px 20px; animation: fadeIn 0.5s; }
+  .success-icon { font-size: 70px; margin-bottom: 20px; }
+  .status-badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: 600; font-size: 14px; margin-top: 10px; }
+  .status-badge.tot { background: #e8f5e9; color: #2e7d32; }
+  .status-badge.loi { background: #ffebee; color: #c62828; }
+  
+  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 25px; font-size: 14px; z-index: 1000; display: none; }
+  
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<div id="mainContent">
+  <div class="header">
+    <h1 id="deviceName">Tủ chữa cháy</h1>
+    <p id="inspectorName">Đang tải...</p>
+  </div>
+
+  <div class="container">
+    <div class="info-card">
+      <h2 id="deviceCode">Mã: --</h2>
+      <div class="info-grid">
+        <div><span class="info-item">Xưởng:</span><br><span class="info-value" id="deviceXuong">--</span></div>
+        <div><span class="info-item">Vị trí:</span><br><span class="info-value" id="deviceViTri">--</span></div>
+      </div>
+    </div>
+
+    <!-- 1. Ngoại quan tủ -->
+    <div class="form-group">
+      <label>1. Ngoại quan tủ (Sạch sẽ, không gỉ sét, kính lành lặn)</label>
+      <div class="radio-group">
+        <div class="radio-btn" id="nq_dat" onclick="selectOption('ngoaiQuanTu', 'Đạt', 'ok')">Đạt</div>
+        <div class="radio-btn" id="nq_loi" onclick="selectOption('ngoaiQuanTu', 'Lỗi', 'err')">Lỗi</div>
+      </div>
+    </div>
+
+    <!-- 2. Vòi phun -->
+    <div class="form-group">
+      <label>2. Vòi phun (Đủ số lượng, không kẹt, rò rỉ)</label>
+      <div class="radio-group">
+        <div class="radio-btn" id="voi_dat" onclick="selectOption('voiPhun', 'Đạt', 'ok')">Đạt</div>
+        <div class="radio-btn" id="voi_loi" onclick="selectOption('voiPhun', 'Lỗi', 'err')">Lỗi</div>
+      </div>
+    </div>
+
+    <!-- 3. Cuộn vòi -->
+    <div class="form-group">
+      <label>3. Cuộn vòi (Gấp đúng quy định, không rách)</label>
+      <div class="radio-group">
+        <div class="radio-btn" id="cuon_dat" onclick="selectOption('cuonVoi', 'Đạt', 'ok')">Đạt</div>
+        <div class="radio-btn" id="cuon_loi" onclick="selectOption('cuonVoi', 'Lỗi', 'err')">Lỗi</div>
+      </div>
+    </div>
+
+    <!-- 4. Búa phá kính -->
+    <div class="form-group">
+      <label>4. Búa phá kính (Sẵn có, đúng vị trí)</label>
+      <div class="radio-group">
+        <div class="radio-btn" id="bua_dat" onclick="selectOption('buaPha', 'Đạt', 'ok')">Đạt</div>
+        <div class="radio-btn" id="bua_loi" onclick="selectOption('buaPha', 'Lỗi', 'err')">Lỗi</div>
+      </div>
+    </div>
+
+    <!-- Hình ảnh -->
+    <div class="form-group">
+      <label>5. Chụp ảnh hiện trạng *</label>
+      <div class="photo-box" onclick="document.getElementById('fileInput').click()">
+        <span style="font-size:30px">📷</span><br>
+        <span style="font-size:13px;color:#888">Bấm để chụp hoặc chọn ảnh</span>
+        <input type="file" id="fileInput" accept="image/*" capture="environment" style="display:none" onchange="handleFileSelect(this)">
+        <img id="previewImg" class="preview-img">
+        <div id="uploadProgress"><div id="progressFill"></div></div>
+      </div>
+    </div>
+
+    <!-- Ghi chú -->
+    <div class="form-group">
+      <label>6. Ghi chú thêm (nếu có)</label>
+      <textarea id="ghiChu" rows="3" placeholder="Nhập ghi chú chi tiết..."></textarea>
+    </div>
+
+    <button class="btn-submit" id="submitBtn" onclick="submitForm()" disabled>🚀 Gửi kết quả kiểm tra</button>
+  </div>
+</div>
+
+<div class="success-screen" id="successScreen">
+  <div class="success-icon" id="successIcon">✅</div>
+  <h2 id="successTitle">Gửi thành công!</h2>
+  <div id="statusBadge" class="status-badge">Tình trạng: Tốt</div>
+  <p id="successMsg" style="margin-top:20px;color:#666;line-height:1.6">Thiết bị hoạt động bình thường. Cảm ơn bạn!</p>
+  <button class="btn-submit" style="margin-top:30px;background:#eee;color:#333;box-shadow:none" onclick="location.reload()">Kiểm tra tiếp</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="api.js"></script>
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  var DEVICE_CODE = urlParams.get('device') || '';
+  var currentUser = null;
+  var uploadedImageUrl = '';
+
+  (function() {
+    var session = localStorage.getItem('pccc_session');
+    if (!session) {
+      window.location.href = 'Login.html?returnUrl=' + encodeURIComponent(window.location.href) + '&device=' + encodeURIComponent(DEVICE_CODE);
+      return;
+    }
+    try {
+      currentUser = JSON.parse(session);
+    } catch(e) { window.location.href = 'Login.html?device=' + encodeURIComponent(DEVICE_CODE); }
+  })();
+
+var answers = { ngoaiQuanTu: null, voiPhun: null, cuonVoi: null, buaPha: null };
+var deviceInfo = {};
+var CLOUDINARY_URL = '';
+var UPLOAD_PRESET = '';
+
+window.onload = async function() {
+  if (!currentUser) return;
+  document.getElementById('inspectorName').textContent = '👤 ' + currentUser.hoTen;
+  document.getElementById('deviceName').textContent = 'Đang tải thông tin...';
+
+  try {
+    const res = await callAPI('getDeviceInfo', { deviceCode: DEVICE_CODE });
+    if (res.success) {
+      deviceInfo = res.device;
+      document.getElementById('deviceName').textContent = deviceInfo.tenThietBi || 'Tủ chữa cháy';
+      document.getElementById('deviceCode').textContent = '📋 ' + deviceInfo.maThietBi;
+      document.getElementById('deviceXuong').textContent = '🏭 ' + deviceInfo.xuong;
+      document.getElementById('deviceViTri').textContent = '📍 ' + deviceInfo.viTri;
+    } else {
+      document.getElementById('deviceName').textContent = 'Lỗi tải thiết bị';
+    }
+
+    const cfgRes = await callAPI('getCloudinaryConfig');
+    if (cfgRes.success) {
+      CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/' + cfgRes.data.cloudName + '/image/upload';
+      UPLOAD_PRESET = cfgRes.data.uploadPreset;
+    }
+  } catch(err) { showToast('❌ Lỗi tải dữ liệu', 'error'); }
+};
+
+function selectOption(field, value, type) {
+  answers[field] = value;
+  var prefixMap = { ngoaiQuanTu: 'nq', voiPhun: 'voi', cuonVoi: 'cuon', buaPha: 'bua' };
+  var prefix = prefixMap[field];
+  document.querySelectorAll('[id^="' + prefix + '_"]').forEach(b => b.className = 'radio-btn');
+  
+  var idMap = {
+    ngoaiQuanTu: { 'Đạt': 'nq_dat', 'Lỗi': 'nq_loi' },
+    voiPhun: { 'Đạt': 'voi_dat', 'Lỗi': 'voi_loi' },
+    cuonVoi: { 'Đạt': 'cuon_dat', 'Lỗi': 'cuon_loi' },
+    buaPha: { 'Đạt': 'bua_dat', 'Lỗi': 'bua_loi' }
+  };
+  document.getElementById(idMap[field][value]).className = 'radio-btn ' + (type === 'ok' ? 'selected-ok' : 'selected-err');
+  checkFormComplete();
+}
+
+function checkFormComplete() {
+  var allAnswered = answers.ngoaiQuanTu && answers.voiPhun && answers.cuonVoi && answers.buaPha;
+  document.getElementById('submitBtn').disabled = !(allAnswered && uploadedImageUrl);
+}
+
+function handleFileSelect(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var MAX = 1200;
+      var ratio = Math.min(MAX/img.width, MAX/img.height, 1);
+      canvas.width = img.width * ratio; canvas.height = img.height * ratio;
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      document.getElementById('previewImg').src = canvas.toDataURL('image/jpeg', 0.85);
+      document.getElementById('previewImg').style.display = 'block';
+      canvas.toBlob(blob => uploadToCloudinary(blob), 'image/jpeg', 0.85);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function uploadToCloudinary(blob) {
+  if (!CLOUDINARY_URL) return;
+  var progress = document.getElementById('uploadProgress');
+  var fill = document.getElementById('progressFill');
+  progress.style.display = 'block';
+  var formData = new FormData();
+  formData.append('file', blob, 'tcc_' + Date.now() + '.jpg');
+  formData.append('upload_preset', UPLOAD_PRESET);
+  formData.append('folder', 'pccc/' + (deviceInfo.xuong || 'unknown'));
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', CLOUDINARY_URL, true);
+  xhr.upload.onprogress = e => { if(e.lengthComputable) fill.style.width = Math.round(e.loaded/e.total*100) + '%'; };
+  xhr.onload = () => {
+    progress.style.display = 'none';
+    if (xhr.status === 200) {
+      uploadedImageUrl = JSON.parse(xhr.responseText).secure_url;
+      showToast('✅ Đã tải ảnh xong', 'success'); checkFormComplete();
+    } else showToast('❌ Lỗi tải ảnh', 'error');
+  };
+  xhr.send(formData);
+}
+
+async function submitForm() {
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.innerHTML = '⏳ Đang gửi...';
+  var formData = {
+    maThietBi: deviceInfo.maThietBi || DEVICE_CODE,
+    xuong: deviceInfo.xuong || '', viTri: deviceInfo.viTri || '',
+    ngoaiQuanTu: answers.ngoaiQuanTu, voiPhun: answers.voiPhun, cuonVoi: answers.cuonVoi, buaPha: answers.buaPha,
+    tenNguoiKiemTra: currentUser.hoTen, hinhAnhUrl: uploadedImageUrl, ghiChu: document.getElementById('ghiChu').value
+  };
+  try {
+    const res = await callAPI('submitTCCInspection', { formData: formData });
+    if (res.success) {
+      document.getElementById('mainContent').style.display = 'none';
+      document.getElementById('successScreen').style.display = 'block';
+      var isLoi = res.tinhTrang === 'Lỗi';
+      document.getElementById('successIcon').textContent = isLoi ? '⚠️' : '✅';
+      var b = document.getElementById('statusBadge');
+      b.textContent = 'Tình trạng: ' + res.tinhTrang;
+      b.className = 'status-badge ' + (isLoi ? 'loi' : 'tot');
+    } else { btn.disabled = false; btn.innerHTML = '🚀 Gửi kết quả'; showToast('❌ ' + res.message, 'error'); }
+  } catch(e) { btn.disabled = false; showToast('❌ Lỗi kết nối', 'error'); }
+}
+
+function showToast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + (type || '');
+  t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000);
+}
+</script>
+</body>
+</html>
