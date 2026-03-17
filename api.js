@@ -1,6 +1,6 @@
 const APP_CONFIG = {
   // Thay thế URL sau bằng URL Web App của bạn sau khi deploy MỚI NHẤT
-  API_URL: "https://script.google.com/macros/s/AKfycbxGjgAYoDfARHXXS6DoDlg14NBXHhO1A5IpwV0tlSRIDhzhbir0Vt2RkdLOqhNx8qcK1w/exec"
+  API_URL: "https://script.google.com/macros/s/AKfycbzp8zPkAHachX9fbuG9U6R06tAXeMQ6-0XWVbxHlTFwMNXv2D-E3AUBhquAzJveJa6XzQ/exec"
 };
 
 /**
