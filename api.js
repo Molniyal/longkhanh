@@ -1,6 +1,6 @@
 const APP_CONFIG = {
   // Thay thế URL sau bằng URL Web App của bạn sau khi deploy MỚI NHẤT
-  API_URL: "https://script.google.com/macros/s/AKfycby6bVHUx_iIfSrEhL3guuIDoUcWSHowSbGtlx0RP8lF6oxXQKF9GX0LV2QnHMcnay10Rw/exec"
+  API_URL: "https://script.google.com/macros/s/AKfycbyThh4rR--mNuUgXCs62-JLJgQfaIl1b8PW51VtI_2FYXBOJL2SDM2foQLXQ09A6iXSgQ/exec"
 };
 
 /**
@@ -13,13 +13,13 @@ async function callAPI(action, payload = {}) {
       method: "POST",
       body: JSON.stringify(payload),
       headers: {
-        "Content-Type": "text/plain;charset=utf-8" // Trick để tránh lỗi CORS Preflight
+        "Content-Type": "text/plain" // Trick để tránh lỗi CORS Preflight
       }
     });
-    
+
     // Nếu request bị redirect auth hoặc lỗi phân giải script
     if (!response.ok) {
-        throw new Error("HTTP error " + response.status);
+      throw new Error("HTTP error " + response.status);
     }
 
     const data = await response.json();
