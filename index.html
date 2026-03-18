@@ -50,11 +50,23 @@
         
         window.location.href = target + '?device=' + encodeURIComponent(deviceId);
       } else {
-        const user = localStorage.getItem('user');
+        const user = localStorage.getItem('pccc_session');
         if (user) {
           const u = JSON.parse(user);
-          if (['Admin', 'HSE'].includes(u.vaiTro)) window.location.href = 'Admin.html';
-          else window.location.href = 'Login.html';
+          if (['Admin', 'HSE'].includes(u.vaiTro)) {
+            window.location.href = 'Admin.html';
+          } else {
+            // Đối với Staff: Hiển thị giao diện hướng dẫn
+            document.querySelector('h2').textContent = 'XIN CHÀO, ' + u.hoTen.toUpperCase();
+            document.querySelector('p').innerHTML = 'Vui lòng <b>Quét mã QR</b> trên thiết bị<br>để bắt đầu thực hiện kiểm tra.';
+            document.querySelector('.dna-spinner').style.animation = 'none';
+            document.querySelector('.dna-spinner').innerHTML = '📱';
+            document.querySelector('.dna-spinner').style.fontSize = '40px';
+            document.querySelector('.dna-spinner').style.display = 'flex';
+            document.querySelector('.dna-spinner').style.alignItems = 'center';
+            document.querySelector('.dna-spinner').style.justifyContent = 'center';
+            document.querySelector('.dna-spinner').style.border = 'none';
+          }
         } else {
           window.location.href = 'Login.html';
         }
