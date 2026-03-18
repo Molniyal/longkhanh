@@ -944,7 +944,7 @@
               <option value="50">50 dòng</option>
             </select>
           </div>
-          <button class="btn-primary" onclick="loadDashboard()">🔍 Tra cứu</button>
+          <button class="btn-primary" onclick="applyFilter()">🔍 Tra cứu</button>
           <button class="btn-secondary" onclick="resetFilter()">🔄 Reset</button>
         </div>
       </div>
@@ -1057,6 +1057,7 @@
   <script>
     var currentUser = null;
     var allHistoryData = [];
+    var filteredData = [];
     var currentPage = 1;
     var myBarChart = null;
     var myDoughnutChart = null;
@@ -1149,6 +1150,7 @@
           renderWorkshopStats(res.workshopStats);
 
           allHistoryData = res.history || [];
+          filteredData = [...allHistoryData];
           renderTable();
 
           if (document.getElementById('lastUpdate')) {
@@ -1227,10 +1229,10 @@
     function renderTable() {
       const pageSize = parseInt(document.getElementById('pageSize').value);
       const start = (currentPage - 1) * pageSize;
-      const paginatedData = allHistoryData.slice(start, start + pageSize);
-      const totalPages = Math.ceil(allHistoryData.length / pageSize) || 1;
+      const paginatedData = filteredData.slice(start, start + pageSize);
+      const totalPages = Math.ceil(filteredData.length / pageSize) || 1;
 
-      document.getElementById('paginationSummary').textContent = `Hiển thị ${start + 1}-${Math.min(start + pageSize, allHistoryData.length)} / ${allHistoryData.length}`;
+      document.getElementById('paginationSummary').textContent = `Hiển thị ${start + 1}-${Math.min(start + pageSize, filteredData.length)} / ${filteredData.length}`;
       document.getElementById('currentPageNum').textContent = currentPage;
       document.getElementById('totalPageNum').textContent = totalPages;
 
@@ -1312,15 +1314,28 @@
         alert('Lỗi: ' + e.message);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = originalText;
+        btn.innerHTML = oldText;
       }
     }
 
     function resetFilter() {
-      if (document.getElementById('filterXuong')) document.getElementById('filterXuong').value = '';
-      if (document.getElementById('filterTinhTrang')) document.getElementById('filterTinhTrang').value = '';
+      document.getElementById('filterXuong').value = '';
+      document.getElementById('filterTinhTrang').value = '';
       currentPage = 1;
-      loadDashboard();
+      filteredData = [...allHistoryData];
+      renderTable();
+    }
+
+    function applyFilter() {
+      const xuong = document.getElementById('filterXuong').value;
+      const tinhTrang = document.getElementById('filterTinhTrang').value;
+      currentPage = 1;
+      filteredData = allHistoryData.filter(r => {
+        const matchXuong = !xuong || r['Xưởng'] === xuong;
+        const matchTT = !tinhTrang || r['Tình trạng'] === tinhTrang;
+        return matchXuong && matchTT;
+      });
+      renderTable();
     }
 
     function logout() {
