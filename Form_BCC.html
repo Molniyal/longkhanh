@@ -1,521 +1,528 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Kiểm tra Bình chữa cháy</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Kiểm tra Bình chữa cháy</title>
   /* Glassmorphism Design System */
   :root {
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(255, 255, 255, 0.4);
-    --primary: #c62828;
-    --secondary: #1a237e;
-    --accent: #2e7d32;
-    --text: #1a1a1a;
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --primary: #c62828;
+  --secondary: #1a237e;
+  --accent: #2e7d32;
+  --text: #1a1a1a;
   }
 
   body {
-    font-family: 'Outfit', 'Inter', -apple-system, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    background-attachment: fixed;
-    color: var(--text);
-    padding-bottom: 40px;
-    -webkit-font-smoothing: antialiased;
+  font-family: 'Outfit', 'Inter', -apple-system, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  padding-bottom: 40px;
+  -webkit-font-smoothing: antialiased;
   }
 
   .header {
-    background: rgba(198, 40, 40, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    color: white;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  background: rgba(198, 40, 40, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: white;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   }
   .header-icon { font-size: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
   .header h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
   .header p { font-size: 13px; opacity: 0.9; margin-top: 4px; font-weight: 500; }
 
   .glass-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--glass-border);
-    border-radius: 24px;
-    margin: 16px;
-    padding: 24px;
-    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
-    transition: transform 0.3s ease;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  margin: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+  transition: transform 0.3s ease;
   }
 
   .device-card {
-    border-left: 6px solid var(--primary);
+  border-left: 6px solid var(--primary);
   }
-  .device-card h3 { font-size: 12px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .device-card h3 { font-size: 12px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 8px; }
   .device-name { font-size: 22px; font-weight: 800; color: var(--secondary); margin-bottom: 12px; }
   .device-meta { display: flex; gap: 8px; flex-wrap: wrap; }
   .device-meta span {
-    font-size: 13px;
-    background: rgba(26, 35, 126, 0.08);
-    padding: 6px 14px;
-    border-radius: 12px;
-    color: var(--secondary);
-    font-weight: 600;
-    border: 1px solid rgba(26, 35, 126, 0.1);
+  font-size: 13px;
+  background: rgba(26, 35, 126, 0.08);
+  padding: 6px 14px;
+  border-radius: 12px;
+  color: var(--secondary);
+  font-weight: 600;
+  border: 1px solid rgba(26, 35, 126, 0.1);
   }
 
   .section-title {
-    font-size: 16px;
-    font-weight: 800;
-    color: var(--secondary);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--secondary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   }
 
   .question { margin-bottom: 24px; }
   .question-label {
-    font-size: 16px;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   }
   .question-num {
-    background: var(--secondary);
-    color: white;
-    width: 26px; height: 26px;
-    border-radius: 8px;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 10px rgba(26,35,126,0.3);
+  background: var(--secondary);
+  color: white;
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(26,35,126,0.3);
   }
 
   .radio-group { display: flex; gap: 12px; }
   .radio-btn {
-    flex: 1;
-    padding: 16px;
-    border: 2px solid rgba(0,0,0,0.05);
-    background: rgba(255,255,255,0.5);
-    border-radius: 16px;
-    text-align: center;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 700;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    color: #666;
+  flex: 1;
+  padding: 16px;
+  border: 2px solid rgba(0,0,0,0.05);
+  background: rgba(255,255,255,0.5);
+  border-radius: 16px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #666;
   }
   .radio-btn:hover { background: rgba(255,255,255,0.8); }
   .radio-btn.selected-ok {
-    background: #e8f5e9;
-    border-color: var(--accent);
-    color: #1b5e20;
-    box-shadow: 0 6px 15px rgba(46, 125, 50, 0.2);
-    transform: translateY(-2px);
+  background: #e8f5e9;
+  border-color: var(--accent);
+  color: #1b5e20;
+  box-shadow: 0 6px 15px rgba(46, 125, 50, 0.2);
+  transform: translateY(-2px);
   }
   .radio-btn.selected-err {
-    background: #ffebee;
-    border-color: var(--primary);
-    color: #b71c1c;
-    box-shadow: 0 6px 15px rgba(198, 40, 40, 0.2);
-    transform: translateY(-2px);
+  background: #ffebee;
+  border-color: var(--primary);
+  color: #b71c1c;
+  box-shadow: 0 6px 15px rgba(198, 40, 40, 0.2);
+  transform: translateY(-2px);
   }
 
   .upload-area {
-    background: rgba(255,255,255,0.4);
-    border: 2px dashed rgba(0,0,0,0.1);
-    border-radius: 20px;
-    padding: 32px 20px;
-    text-align: center;
-    transition: all 0.3s ease;
+  background: rgba(255,255,255,0.4);
+  border: 2px dashed rgba(0,0,0,0.1);
+  border-radius: 20px;
+  padding: 32px 20px;
+  text-align: center;
+  transition: all 0.3s ease;
   }
   .upload-area:active { transform: scale(0.98); }
   .upload-area .upload-icon { font-size: 48px; margin-bottom: 12px; }
   .upload-area p { font-size: 15px; font-weight: 700; color: var(--secondary); }
 
   textarea {
-    width: 100%;
-    background: rgba(255,255,255,0.5);
-    border: 2px solid rgba(0,0,0,0.05);
-    border-radius: 16px;
-    padding: 16px;
-    font-size: 15px;
-    font-family: inherit;
-    font-weight: 500;
-    min-height: 100px;
-    transition: all 0.3s ease;
+  width: 100%;
+  background: rgba(255,255,255,0.5);
+  border: 2px solid rgba(0,0,0,0.05);
+  border-radius: 16px;
+  padding: 16px;
+  font-size: 15px;
+  font-family: inherit;
+  font-weight: 500;
+  min-height: 100px;
+  transition: all 0.3s ease;
   }
   textarea:focus { border-color: var(--secondary); background: white; }
 
   .btn-submit {
-    width: 100%;
-    padding: 20px;
-    background: linear-gradient(135deg, #1a237e, #311b92);
-    color: white;
-    border: none;
-    border-radius: 20px;
-    font-size: 18px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    box-shadow: 0 10px 25px rgba(26, 35, 126, 0.4);
-    transition: all 0.3s ease;
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(135deg, #1a237e, #311b92);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  box-shadow: 0 10px 25px rgba(26, 35, 126, 0.4);
+  transition: all 0.3s ease;
   }
   .btn-submit:active { transform: scale(0.96); }
   .btn-submit:disabled { opacity: 0.5; box-shadow: none; pointer-events: none; }
 
   /* Success State */
   .success-overlay {
-    position: fixed; inset: 0; background: var(--secondary);
-    display: none; flex-direction: column; align-items: center; justify-content: center;
-    z-index: 1000; padding: 40px; text-align: center; color: white;
+  position: fixed; inset: 0; background: var(--secondary);
+  display: none; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 1000; padding: 40px; text-align: center; color: white;
   }
   .success-lottie { font-size: 100px; margin-bottom: 24px; animation: bounce 1s infinite; }
   @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-</style>
+  </style>
 </head>
+
 <body>
 
-<!-- Login check sẽ redirect nếu chưa đăng nhập -->
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  var DEVICE_CODE = urlParams.get('device') || '';
-  var currentUser = null;
-  var uploadedImageUrl = '';
+  <!-- Login check sẽ redirect nếu chưa đăng nhập -->
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    var DEVICE_CODE = urlParams.get('device') || '';
+    var currentUser = null;
+    var uploadedImageUrl = '';
 
-  (function() {
-    var session = localStorage.getItem('pccc_session');
-    if (!session) {
-      window.location.href = 'Login.html?returnUrl=' + encodeURIComponent(window.location.href) + '&device=' + encodeURIComponent(DEVICE_CODE);
-      return;
-    }
-    try {
-      currentUser = JSON.parse(session);
-    } catch(e) {
-      window.location.href = 'Login.html?device=' + encodeURIComponent(DEVICE_CODE);
-    }
-  })();
-</script>
+    (function () {
+      var session = localStorage.getItem('pccc_session');
+      if (!session) {
+        window.location.href = 'Login.html?returnUrl=' + encodeURIComponent(window.location.href) + '&device=' + encodeURIComponent(DEVICE_CODE);
+        return;
+      }
+      try {
+        currentUser = JSON.parse(session);
+      } catch (e) {
+        window.location.href = 'Login.html?device=' + encodeURIComponent(DEVICE_CODE);
+      }
+    })();
+  </script>
 
-<div id="mainContent">
-  <div class="header">
-    <div class="header-icon">🧯</div>
-    <div>
-      <h1>Kiểm tra Bình chữa cháy</h1>
-      <p id="inspectorName">Đang tải...</p>
+  <div id="mainContent">
+    <div class="header">
+      <div class="header-icon">🧯</div>
+      <div>
+        <h1>Kiểm tra Bình chữa cháy</h1>
+        <p id="inspectorName">Đang tải...</p>
+      </div>
+    </div>
+
+    <!-- Thông tin thiết bị -->
+    <div class="device-card">
+      <h3>THIẾT BỊ ĐANG KIỂM TRA</h3>
+      <div class="device-name" id="deviceName">Đang tải...</div>
+      <div class="device-meta">
+        <span id="deviceCode">📋 Mã: ...</span>
+        <span id="deviceXuong">🏭 Xưởng: ...</span>
+        <span id="deviceViTri">📍 Vị trí: ...</span>
+      </div>
+    </div>
+
+    <!-- Form kiểm tra -->
+    <div class="section">
+      <div class="section-title">📝 Tiêu chí kiểm tra</div>
+
+      <!-- Câu 1: Ngoại quan -->
+      <div class="question">
+        <div class="question-label">
+          <span class="question-num">1</span>
+          Ngoại quan bình
+        </div>
+        <div class="radio-group">
+          <div class="radio-btn" id="nq_dat" onclick="selectOption('ngoaiQuan','Đạt','ok')">✅ Đạt</div>
+          <div class="radio-btn" id="nq_loi" onclick="selectOption('ngoaiQuan','Lỗi','err')">❌ Lỗi</div>
+        </div>
+      </div>
+
+      <!-- Câu 2: Áp suất -->
+      <div class="question">
+        <div class="question-label">
+          <span class="question-num">2</span>
+          Áp suất đồng hồ
+        </div>
+        <div class="radio-group">
+          <div class="radio-btn" id="as_dat" onclick="selectOption('apSuat','Đạt','ok')">✅ Đạt</div>
+          <div class="radio-btn" id="as_loi" onclick="selectOption('apSuat','Lỗi','err')">❌ Lỗi</div>
+        </div>
+      </div>
+
+      <!-- Câu 3: Hạn sử dụng -->
+      <div class="question">
+        <div class="question-label">
+          <span class="question-num">3</span>
+          Hạn sử dụng
+        </div>
+        <div class="radio-group">
+          <div class="radio-btn" id="hsd_con" onclick="selectOption('hanSuDung','Còn hạn','ok')">✅ Còn hạn</div>
+          <div class="radio-btn" id="hsd_het" onclick="selectOption('hanSuDung','Hết hạn','err')">❌ Hết hạn</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chụp ảnh -->
+    <div class="section">
+      <div class="section-title">📷 Hình ảnh hiện trạng <span style="color:#ff8a80;font-size:12px">(Bắt buộc)</span>
+      </div>
+      <div class="photo-section">
+        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+          <span class="upload-icon">📸</span>
+          <p><b>Chụp hoặc chọn ảnh</b></p>
+          <small>Nhấn để mở camera hoặc thư viện ảnh</small>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" capture="environment" onchange="handleFileSelect(this)">
+        <img id="previewImg" class="preview-img" alt="Ảnh xem trước">
+        <div class="upload-progress" id="uploadProgress">
+          <span>⏳ Đang upload ảnh...</span>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ghi chú -->
+    <div class="section">
+      <div class="section-title">💬 Ghi chú (không bắt buộc)</div>
+      <div class="note-section">
+        <textarea id="ghiChu" placeholder="Mô tả chi tiết tình trạng lỗi hoặc ghi chú thêm..."></textarea>
+      </div>
+    </div>
+
+    <!-- Nút gửi -->
+    <div class="submit-section">
+      <button class="btn-submit" id="submitBtn" onclick="submitForm()" disabled>
+        🚀 Gửi kết quả kiểm tra
+      </button>
     </div>
   </div>
 
-  <!-- Thông tin thiết bị -->
-  <div class="device-card">
-    <h3>THIẾT BỊ ĐANG KIỂM TRA</h3>
-    <div class="device-name" id="deviceName">Đang tải...</div>
-    <div class="device-meta">
-      <span id="deviceCode">📋 Mã: ...</span>
-      <span id="deviceXuong">🏭 Xưởng: ...</span>
-      <span id="deviceViTri">📍 Vị trí: ...</span>
-    </div>
+  <!-- Màn hình thành công -->
+  <div class="success-screen" id="successScreen">
+    <span class="success-icon" id="successIcon">✅</span>
+    <h2>Đã ghi nhận kết quả!</h2>
+    <div class="status-badge" id="statusBadge"></div>
+    <p id="successMsg" style="color:#666;font-size:14px;margin-top:8px"></p>
+    <button class="btn-again" onclick="location.reload()">Kiểm tra thiết bị khác</button>
   </div>
 
-  <!-- Form kiểm tra -->
-  <div class="section">
-    <div class="section-title">📝 Tiêu chí kiểm tra</div>
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
 
-    <!-- Câu 1: Ngoại quan -->
-    <div class="question">
-      <div class="question-label">
-        <span class="question-num">1</span>
-        Ngoại quan bình
-      </div>
-      <div class="radio-group">
-        <div class="radio-btn" id="nq_dat" onclick="selectOption('ngoaiQuan','Đạt','ok')">✅ Đạt</div>
-        <div class="radio-btn" id="nq_loi" onclick="selectOption('ngoaiQuan','Lỗi','err')">❌ Lỗi</div>
-      </div>
-    </div>
+  <script src="api.js"></script>
+  <script>
+    // State
+    var answers = { ngoaiQuan: null, apSuat: null, hanSuDung: null };
+    var deviceInfo = {};
+    var CLOUDINARY_URL = '';
+    var UPLOAD_PRESET = '';
 
-    <!-- Câu 2: Áp suất -->
-    <div class="question">
-      <div class="question-label">
-        <span class="question-num">2</span>
-        Áp suất đồng hồ
-      </div>
-      <div class="radio-group">
-        <div class="radio-btn" id="as_dat" onclick="selectOption('apSuat','Đạt','ok')">✅ Đạt</div>
-        <div class="radio-btn" id="as_loi" onclick="selectOption('apSuat','Lỗi','err')">❌ Lỗi</div>
-      </div>
-    </div>
+    // Init
+    window.onload = async function () {
+      if (!currentUser) return;
+      document.getElementById('inspectorName').textContent = '👤 ' + currentUser.hoTen;
 
-    <!-- Câu 3: Hạn sử dụng -->
-    <div class="question">
-      <div class="question-label">
-        <span class="question-num">3</span>
-        Hạn sử dụng
-      </div>
-      <div class="radio-group">
-        <div class="radio-btn" id="hsd_con" onclick="selectOption('hanSuDung','Còn hạn','ok')">✅ Còn hạn</div>
-        <div class="radio-btn" id="hsd_het" onclick="selectOption('hanSuDung','Hết hạn','err')">❌ Hết hạn</div>
-      </div>
-    </div>
-  </div>
+      document.getElementById('deviceName').textContent = 'Đang tải thông tin...';
 
-  <!-- Chụp ảnh -->
-  <div class="section">
-    <div class="section-title">📷 Hình ảnh hiện trạng <span style="color:#ff8a80;font-size:12px">(Bắt buộc)</span></div>
-    <div class="photo-section">
-      <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
-        <span class="upload-icon">📸</span>
-        <p><b>Chụp hoặc chọn ảnh</b></p>
-        <small>Nhấn để mở camera hoặc thư viện ảnh</small>
-      </div>
-      <input type="file" id="fileInput" accept="image/*" capture="environment" onchange="handleFileSelect(this)">
-      <img id="previewImg" class="preview-img" alt="Ảnh xem trước">
-      <div class="upload-progress" id="uploadProgress">
-        <span>⏳ Đang upload ảnh...</span>
-        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-      </div>
-    </div>
-  </div>
+      try {
+        // Load thông tin thiết bị
+        const res = await callAPI('getDeviceInfo', { deviceCode: DEVICE_CODE });
+        if (res.success) {
+          deviceInfo = res.device;
+          document.getElementById('deviceName').textContent = deviceInfo.tenThietBi || 'Bình chữa cháy';
+          document.getElementById('deviceCode').textContent = '📋 ' + deviceInfo.maThietBi;
+          document.getElementById('deviceXuong').textContent = '🏭 ' + deviceInfo.xuong;
+          document.getElementById('deviceViTri').textContent = '📍 ' + deviceInfo.viTri;
+        } else {
+          document.getElementById('deviceName').textContent = 'Lỗi tải thiết bị';
+        }
 
-  <!-- Ghi chú -->
-  <div class="section">
-    <div class="section-title">💬 Ghi chú (không bắt buộc)</div>
-    <div class="note-section">
-      <textarea id="ghiChu" placeholder="Mô tả chi tiết tình trạng lỗi hoặc ghi chú thêm..."></textarea>
-    </div>
-  </div>
-
-  <!-- Nút gửi -->
-  <div class="submit-section">
-    <button class="btn-submit" id="submitBtn" onclick="submitForm()" disabled>
-      🚀 Gửi kết quả kiểm tra
-    </button>
-  </div>
-</div>
-
-<!-- Màn hình thành công -->
-<div class="success-screen" id="successScreen">
-  <span class="success-icon" id="successIcon">✅</span>
-  <h2>Đã ghi nhận kết quả!</h2>
-  <div class="status-badge" id="statusBadge"></div>
-  <p id="successMsg" style="color:#666;font-size:14px;margin-top:8px"></p>
-  <button class="btn-again" onclick="location.reload()">Kiểm tra thiết bị khác</button>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-
-<script src="api.js"></script>
-<script>
-// State
-var answers = { ngoaiQuan: null, apSuat: null, hanSuDung: null };
-var deviceInfo = {};
-var CLOUDINARY_URL = '';
-var UPLOAD_PRESET = '';
-
-// Init
-window.onload = async function() {
-  if (!currentUser) return;
-  document.getElementById('inspectorName').textContent = '👤 ' + currentUser.hoTen;
-
-  document.getElementById('deviceName').textContent = 'Đang tải thông tin...';
-
-  try {
-    // Load thông tin thiết bị
-    const res = await callAPI('getDeviceInfo', { deviceCode: DEVICE_CODE });
-    if (res.success) {
-      deviceInfo = res.device;
-      document.getElementById('deviceName').textContent = deviceInfo.tenThietBi || 'Bình chữa cháy';
-      document.getElementById('deviceCode').textContent = '📋 ' + deviceInfo.maThietBi;
-      document.getElementById('deviceXuong').textContent = '🏭 ' + deviceInfo.xuong;
-      document.getElementById('deviceViTri').textContent = '📍 ' + deviceInfo.viTri;
-    } else {
-      document.getElementById('deviceName').textContent = 'Lỗi tải thiết bị';
-    }
-
-    // Lấy config Cloudinary
-    const cfgRes = await callAPI('getCloudinaryConfig');
-    if (cfgRes.success) {
-      CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/' + cfgRes.data.cloudName + '/image/upload';
-      UPLOAD_PRESET = cfgRes.data.uploadPreset;
-    }
-  } catch(err) {
-    showToast('❌ Lỗi tải dữ liệu ban đầu', 'error');
-  }
-};
-
-function selectOption(field, value, type) {
-  answers[field] = value;
-
-  // Reset UI cho nhóm
-  var prefixMap = { ngoaiQuan: 'nq', apSuat: 'as', hanSuDung: 'hsd' };
-  var prefix = prefixMap[field];
-  var allBtns = document.querySelectorAll('[id^="' + prefix + '_"]');
-  allBtns.forEach(function(btn) {
-    btn.className = 'radio-btn';
-  });
-
-  // Highlight selected
-  var idMap = {
-    ngoaiQuan: { 'Đạt': 'nq_dat', 'Lỗi': 'nq_loi' },
-    apSuat: { 'Đạt': 'as_dat', 'Lỗi': 'as_loi' },
-    hanSuDung: { 'Còn hạn': 'hsd_con', 'Hết hạn': 'hsd_het' },
-  };
-  var targetId = idMap[field][value];
-  var targetClass = type === 'ok' ? 'selected-ok' : 'selected-err';
-  document.getElementById(targetId).className = 'radio-btn ' + targetClass;
-
-  checkFormComplete();
-}
-
-function checkFormComplete() {
-  var allAnswered = answers.ngoaiQuan && answers.apSuat && answers.hanSuDung;
-  var hasImage = uploadedImageUrl !== '';
-  document.getElementById('submitBtn').disabled = !(allAnswered && hasImage);
-}
-
-function handleFileSelect(input) {
-  var file = input.files[0];
-  if (!file) return;
-
-  // Nén ảnh client-side
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var img = new Image();
-    img.onload = function() {
-      var canvas = document.createElement('canvas');
-      var MAX = 1200;
-      var ratio = Math.min(MAX / img.width, MAX / img.height, 1);
-      canvas.width = img.width * ratio;
-      canvas.height = img.height * ratio;
-      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-
-      document.getElementById('previewImg').src = canvas.toDataURL('image/jpeg', 0.85);
-      document.getElementById('previewImg').style.display = 'block';
-
-      canvas.toBlob(function(blob) {
-        uploadToCloudinary(blob);
-      }, 'image/jpeg', 0.85);
+        // Lấy config Cloudinary
+        const cfgRes = await callAPI('getCloudinaryConfig');
+        if (cfgRes.success) {
+          CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/' + cfgRes.data.cloudName + '/image/upload';
+          UPLOAD_PRESET = cfgRes.data.uploadPreset;
+        }
+      } catch (err) {
+        showToast('❌ Lỗi tải dữ liệu ban đầu', 'error');
+      }
     };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
 
-function uploadToCloudinary(blob) {
-  if (!CLOUDINARY_URL || !UPLOAD_PRESET) {
-    showToast('❌ Cấu hình upload ảnh chưa sẵn sàng.', 'error');
-    return;
-  }
+    function selectOption(field, value, type) {
+      answers[field] = value;
 
-  var progress = document.getElementById('uploadProgress');
-  var fill = document.getElementById('progressFill');
-  progress.style.display = 'block';
-  document.getElementById('submitBtn').disabled = true;
+      // Reset UI cho nhóm
+      var prefixMap = { ngoaiQuan: 'nq', apSuat: 'as', hanSuDung: 'hsd' };
+      var prefix = prefixMap[field];
+      var allBtns = document.querySelectorAll('[id^="' + prefix + '_"]');
+      allBtns.forEach(function (btn) {
+        btn.className = 'radio-btn';
+      });
 
-  var formData = new FormData();
-  formData.append('file', blob, 'pccc_' + Date.now() + '.jpg');
-  formData.append('upload_preset', UPLOAD_PRESET);
-  formData.append('folder', 'pccc/' + (deviceInfo.xuong || 'unknown'));
+      // Highlight selected
+      var idMap = {
+        ngoaiQuan: { 'Đạt': 'nq_dat', 'Lỗi': 'nq_loi' },
+        apSuat: { 'Đạt': 'as_dat', 'Lỗi': 'as_loi' },
+        hanSuDung: { 'Còn hạn': 'hsd_con', 'Hết hạn': 'hsd_het' },
+      };
+      var targetId = idMap[field][value];
+      var targetClass = type === 'ok' ? 'selected-ok' : 'selected-err';
+      document.getElementById(targetId).className = 'radio-btn ' + targetClass;
 
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', CLOUDINARY_URL, true);
-
-  xhr.upload.onprogress = function(e) {
-    if (e.lengthComputable) {
-      fill.style.width = Math.round(e.loaded / e.total * 100) + '%';
-    }
-  };
-
-  xhr.onload = function() {
-    progress.style.display = 'none';
-    if (xhr.status === 200) {
-      var res = JSON.parse(xhr.responseText);
-      uploadedImageUrl = res.secure_url;
-      showToast('✅ Ảnh đã được tải lên thành công!', 'success');
       checkFormComplete();
-    } else {
-      showToast('❌ Lỗi upload ảnh. Vui lòng thử lại.', 'error');
     }
-  };
 
-  xhr.onerror = function() {
-    progress.style.display = 'none';
-    showToast('❌ Lỗi kết nối upload. Vui lòng thử lại.', 'error');
-  };
-
-  xhr.send(formData);
-}
-
-async function submitForm() {
-  if (!answers.ngoaiQuan || !answers.apSuat || !answers.hanSuDung) {
-    showToast('⚠️ Vui lòng trả lời đầy đủ 3 tiêu chí!', 'error');
-    return;
-  }
-  if (!uploadedImageUrl) {
-    showToast('⚠️ Vui lòng chụp ảnh hiện trạng!', 'error');
-    return;
-  }
-
-  var btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.innerHTML = '⏳ Đang gửi...';
-
-  var formData = {
-    maThietBi: deviceInfo.maThietBi || DEVICE_CODE,
-    xuong: deviceInfo.xuong || '',
-    viTri: deviceInfo.viTri || '',
-    ngoaiQuan: answers.ngoaiQuan,
-    apSuat: answers.apSuat,
-    hanSuDung: answers.hanSuDung,
-    tenNguoiKiemTra: currentUser.hoTen,
-    hinhAnhUrl: uploadedImageUrl,
-    ghiChu: document.getElementById('ghiChu').value,
-  };
-
-  try {
-    const res = await callAPI('submitBCCInspection', { formData: formData });
-    
-    if (res.success) {
-      document.getElementById('mainContent').style.display = 'none';
-      var ss = document.getElementById('successScreen');
-      ss.style.display = 'block';
-      var isLoi = res.tinhTrang === 'Lỗi';
-      document.getElementById('successIcon').textContent = isLoi ? '⚠️' : '✅';
-      var badge = document.getElementById('statusBadge');
-      badge.textContent = 'Tình trạng: ' + res.tinhTrang;
-      badge.className = 'status-badge ' + (isLoi ? 'loi' : 'tot');
-      document.getElementById('successMsg').textContent = isLoi
-        ? 'Thiết bị có vấn đề. Quản lý sẽ được thông báo để xử lý.'
-        : 'Thiết bị hoạt động bình thường. Cảm ơn bạn!';
-    } else {
-      btn.disabled = false;
-      btn.innerHTML = '🚀 Gửi kết quả kiểm tra';
-      showToast('❌ Lỗi: ' + res.message, 'error');
+    function checkFormComplete() {
+      var allAnswered = answers.ngoaiQuan && answers.apSuat && answers.hanSuDung;
+      var hasImage = uploadedImageUrl !== '';
+      document.getElementById('submitBtn').disabled = !(allAnswered && hasImage);
     }
-  } catch(err) {
-    btn.disabled = false;
-    btn.innerHTML = '🚀 Gửi kết quả kiểm tra';
-    showToast('❌ Lỗi kết nối: ' + err.message, 'error');
-  }
-}
 
-function showToast(msg, type) {
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast ' + (type || '');
-  t.style.display = 'block';
-  setTimeout(function() { t.style.display = 'none'; }, 3500);
-}
-</script>
+    function handleFileSelect(input) {
+      var file = input.files[0];
+      if (!file) return;
+
+      // Nén ảnh client-side
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var img = new Image();
+        img.onload = function () {
+          var canvas = document.createElement('canvas');
+          var MAX = 1200;
+          var ratio = Math.min(MAX / img.width, MAX / img.height, 1);
+          canvas.width = img.width * ratio;
+          canvas.height = img.height * ratio;
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          document.getElementById('previewImg').src = canvas.toDataURL('image/jpeg', 0.85);
+          document.getElementById('previewImg').style.display = 'block';
+
+          canvas.toBlob(function (blob) {
+            uploadToCloudinary(blob);
+          }, 'image/jpeg', 0.85);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function uploadToCloudinary(blob) {
+      if (!CLOUDINARY_URL || !UPLOAD_PRESET) {
+        showToast('❌ Cấu hình upload ảnh chưa sẵn sàng.', 'error');
+        return;
+      }
+
+      var progress = document.getElementById('uploadProgress');
+      var fill = document.getElementById('progressFill');
+      progress.style.display = 'block';
+      document.getElementById('submitBtn').disabled = true;
+
+      var formData = new FormData();
+      formData.append('file', blob, 'pccc_' + Date.now() + '.jpg');
+      formData.append('upload_preset', UPLOAD_PRESET);
+      formData.append('folder', 'pccc/' + (deviceInfo.xuong || 'unknown'));
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', CLOUDINARY_URL, true);
+
+      xhr.upload.onprogress = function (e) {
+        if (e.lengthComputable) {
+          fill.style.width = Math.round(e.loaded / e.total * 100) + '%';
+        }
+      };
+
+      xhr.onload = function () {
+        progress.style.display = 'none';
+        if (xhr.status === 200) {
+          var res = JSON.parse(xhr.responseText);
+          uploadedImageUrl = res.secure_url;
+          showToast('✅ Ảnh đã được tải lên thành công!', 'success');
+          checkFormComplete();
+        } else {
+          showToast('❌ Lỗi upload ảnh. Vui lòng thử lại.', 'error');
+        }
+      };
+
+      xhr.onerror = function () {
+        progress.style.display = 'none';
+        showToast('❌ Lỗi kết nối upload. Vui lòng thử lại.', 'error');
+      };
+
+      xhr.send(formData);
+    }
+
+    async function submitForm() {
+      if (!answers.ngoaiQuan || !answers.apSuat || !answers.hanSuDung) {
+        showToast('⚠️ Vui lòng trả lời đầy đủ 3 tiêu chí!', 'error');
+        return;
+      }
+      if (!uploadedImageUrl) {
+        showToast('⚠️ Vui lòng chụp ảnh hiện trạng!', 'error');
+        return;
+      }
+
+      var btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerHTML = '⏳ Đang gửi...';
+
+      var formData = {
+        maThietBi: deviceInfo.maThietBi || DEVICE_CODE,
+        xuong: deviceInfo.xuong || '',
+        viTri: deviceInfo.viTri || '',
+        ngoaiQuan: answers.ngoaiQuan,
+        apSuat: answers.apSuat,
+        hanSuDung: answers.hanSuDung,
+        tenNguoiKiemTra: currentUser.hoTen,
+        hinhAnhUrl: uploadedImageUrl,
+        ghiChu: document.getElementById('ghiChu').value,
+      };
+
+      try {
+        const res = await callAPI('submitBCCInspection', { formData: formData });
+
+        if (res.success) {
+          document.getElementById('mainContent').style.display = 'none';
+          var ss = document.getElementById('successScreen');
+          ss.style.display = 'block';
+          var isLoi = res.tinhTrang === 'Lỗi';
+          document.getElementById('successIcon').textContent = isLoi ? '⚠️' : '✅';
+          var badge = document.getElementById('statusBadge');
+          badge.textContent = 'Tình trạng: ' + res.tinhTrang;
+          badge.className = 'status-badge ' + (isLoi ? 'loi' : 'tot');
+          document.getElementById('successMsg').textContent = isLoi
+            ? 'Thiết bị có vấn đề. Quản lý sẽ được thông báo để xử lý.'
+            : 'Thiết bị hoạt động bình thường. Cảm ơn bạn!';
+        } else {
+          btn.disabled = false;
+          btn.innerHTML = '🚀 Gửi kết quả kiểm tra';
+          showToast('❌ Lỗi: ' + res.message, 'error');
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = '🚀 Gửi kết quả kiểm tra';
+        showToast('❌ Lỗi kết nối: ' + err.message, 'error');
+      }
+    }
+
+    function showToast(msg, type) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast ' + (type || '');
+      t.style.display = 'block';
+      setTimeout(function () { t.style.display = 'none'; }, 3500);
+    }
+  </script>
 </body>
+
 </html>

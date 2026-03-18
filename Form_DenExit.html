@@ -155,18 +155,22 @@
   <script>
     let deviceData = null;
     let selectedImage = null;
+    let currentUser = null;
 
     document.addEventListener('DOMContentLoaded', async () => {
+      const session = localStorage.getItem('pccc_session');
+      if (session) currentUser = JSON.parse(session);
+
       const urlParams = new URLSearchParams(window.location.search);
-      const deviceId = urlParams.get('id');
-      if (!deviceId) return alert("Thiếu ID thiết bị");
+      const deviceCode = urlParams.get('device');
+      if (!deviceCode) return alert("Thiếu mã thiết bị");
 
       try {
-        const res = await callAPI('getDeviceInfo', { id: deviceId });
+        const res = await callAPI('getDeviceInfo', { deviceCode: deviceCode });
         if (res.success) {
-          deviceData = res.data;
-          document.getElementById('deviceName').innerText = deviceData.ten;
-          document.getElementById('deviceIdBadge').innerText = "ID: " + deviceData.id;
+          deviceData = res.device;
+          document.getElementById('deviceName').innerText = deviceData.tenThietBi;
+          document.getElementById('deviceIdBadge').innerText = "ID: " + deviceData.maThietBi;
           document.getElementById('deviceLocation').innerText = "Vị trí: " + deviceData.viTri;
           document.getElementById('loading').style.display = 'none';
           document.getElementById('mainContent').style.display = 'block';
@@ -215,19 +219,19 @@
           document.getElementById('progressFill').style.width = pct + "%";
         });
 
-        const user = JSON.parse(localStorage.getItem('user') || '{"hoTen":"Ẩn danh"}');
         const answers = {};
         document.querySelectorAll('.radio-group').forEach(g => {
           answers[g.getAttribute('data-name')] = g.querySelector('.selected-ok, .selected-err').getAttribute('data-value');
         });
 
         const payload = {
-          maThietBi: deviceData.id,
+          maThietBi: deviceData.maThietBi,
+          xuong: deviceData.xuong,
+          viTri: deviceData.viTri,
           denSang: answers.denSang,
           chuRo: answers.chuRo,
           gangChac: answers.gangChac,
-          tinhTrang: Object.values(answers).every(v => v === 'Đạt') ? 'Tốt' : 'Cần xử lý',
-          tenNguoiKiemTra: user.hoTen,
+          tenNguoiKiemTra: currentUser ? currentUser.hoTen : "Ẩn danh",
           hinhAnhUrl: imageUrl,
           ghiChu: document.getElementById('note').value
         };
@@ -235,7 +239,7 @@
         const res = await callAPI('submitDenExitInspection', { formData: payload });
         if (res.success) document.getElementById('successOverlay').style.display = 'flex';
         else alert("Lỗi: " + res.message);
-      } catch (err) { alert("Lỗi hệ thống"); btn.disabled = false; }
+      } catch (err) { alert("Lỗi hệ thống: " + err.message); btn.disabled = false; }
     };
   </script>
 </body>

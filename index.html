@@ -48,7 +48,7 @@
         else if (prefix === 'DET' || prefix === 'EXIT') target = 'Form_DenExit.html';
         else if (prefix === 'DCS' || prefix === 'LIGHT') target = 'Form_DenChieuSang.html';
         
-        window.location.href = target + '?id=' + encodeURIComponent(deviceId);
+        window.location.href = target + '?device=' + encodeURIComponent(deviceId);
       } else {
         const user = localStorage.getItem('user');
         if (user) {

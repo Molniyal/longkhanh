@@ -166,15 +166,15 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const deviceId = urlParams.get('id');
+      const deviceId = urlParams.get('device') || urlParams.get('id');
       if (!deviceId) return alert("Thiếu ID thiết bị");
 
       try {
-        const res = await callAPI('getDeviceInfo', { id: deviceId });
+        const res = await callAPI('getDeviceInfo', { deviceCode: deviceId });
         if (res.success) {
-          deviceData = res.data;
-          document.getElementById('deviceName').innerText = deviceData.ten;
-          document.getElementById('deviceIdBadge').innerText = "ID: " + deviceData.id;
+          deviceData = res.device;
+          document.getElementById('deviceName').innerText = deviceData.tenThietBi;
+          document.getElementById('deviceIdBadge').innerText = "ID: " + deviceData.maThietBi;
           document.getElementById('deviceLocation').innerText = "Vị trí: " + deviceData.viTri;
           document.getElementById('loading').style.display = 'none';
           document.getElementById('mainContent').style.display = 'block';
@@ -230,7 +230,7 @@
         });
 
         const payload = {
-          maThietBi: deviceData.id,
+          maThietBi: deviceData.maThietBi,
           ngoaiQuanTu: answers.ngoaiQuanTu,
           voiPhun: answers.voiPhun,
           cuonVoi: answers.cuonVoi,
