@@ -998,7 +998,44 @@
         renderTable();
       } catch (err) {
         console.error(err);
+        document.getElementById('workshopGrid').innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px; color:red">❌ Lỗi tải dữ liệu: ${err.message}</div>`;
       }
+    }
+
+    function renderWorkshopStats(stats) {
+      const grid = document.getElementById('workshopGrid');
+      if (!stats || stats.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px; color:#999">Chưa có dữ liệu xưởng</div>`;
+        return;
+      }
+
+      let html = '';
+      stats.forEach(w => {
+        const isLow = w.percent < 50;
+        const color = isLow ? 'var(--danger)' : (w.percent < 90 ? 'var(--accent-color)' : 'var(--success)');
+
+        html += `
+          <div class="workshop-card">
+            <h4>
+                <span>${w.xuong}</span>
+                <span style="color:${color}">${w.percent}%</span>
+            </h4>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">
+                Đã kiểm tra: ${w.checked}/${w.total} thiết bị
+            </div>
+            
+            <div class="progress-container">
+              <div class="progress-bar" style="width:${w.percent}%; background:${color}"></div>
+            </div>
+
+            <div class="workshop-metrics">
+               <span>Còn lại: ${w.total - w.checked}</span>
+               <span class="metric-loi">Lỗi: ${w.loi}</span>
+            </div>
+          </div>
+        `;
+      });
+      grid.innerHTML = html;
     }
 
     function renderTable() {
