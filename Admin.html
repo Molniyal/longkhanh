@@ -1133,10 +1133,10 @@
     }
 
     // --- Dữ liệu & Biểu đồ ---
-    async function loadDashboard() {
+    async function loadDashboard(filter = {}) {
       const grid = document.getElementById('workshopGrid');
       try {
-        const res = await callAPI('getDashboardData', { filter: {} });
+        const res = await callAPI('getDashboardData', { filter: filter, limit: 200 });
         if (res.success) {
           // Thống kê chính
           document.getElementById('statTotalDevices').textContent = res.stats.totalDevices;
@@ -1322,20 +1322,41 @@
       document.getElementById('filterXuong').value = '';
       document.getElementById('filterTinhTrang').value = '';
       currentPage = 1;
-      filteredData = [...allHistoryData];
-      renderTable();
+      loadDashboard();
     }
 
-    function applyFilter() {
+    async function applyFilter() {
       const xuong = document.getElementById('filterXuong').value;
       const tinhTrang = document.getElementById('filterTinhTrang').value;
       currentPage = 1;
-      filteredData = allHistoryData.filter(r => {
-        const matchXuong = !xuong || r['Xưởng'] === xuong;
-        const matchTT = !tinhTrang || r['Tình trạng'] === tinhTrang;
-        return matchXuong && matchTT;
-      });
-      renderTable();
+
+      // Nếu không có filter nào, lọc luôn từ dữ liệu đã tải
+      if (!xuong && !tinhTrang) {
+        filteredData = [...allHistoryData];
+        renderTable();
+        return;
+      }
+
+      // Gọi API với filter để lấy đúng dữ liệu (không bị giới hạn 50 bản ghi)
+      try {
+        const res = await callAPI('getDashboardData', {
+          filter: { xuong: xuong, tinhTrang: tinhTrang },
+          limit: 500
+        });
+        if (res.success) {
+          filteredData = res.history || [];
+          renderTable();
+        }
+      } catch (err) {
+        console.error('Filter error:', err);
+        // Fallback: lọc client-side nếu API lỗi
+        filteredData = allHistoryData.filter(r => {
+          const matchXuong = !xuong || r['Xưởng'] === xuong;
+          const matchTT = !tinhTrang || r['Tình trạng'] === tinhTrang;
+          return matchXuong && matchTT;
+        });
+        renderTable();
+      }
     }
 
     function logout() {
