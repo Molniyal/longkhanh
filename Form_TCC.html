@@ -161,15 +161,20 @@
 
   <script src="api.js"></script>
   <script>
-    // Session guard - bắt buộc đăng nhập trước khi dùng form
+    // Session guard - bắt buộc đăng nhập + kiểm tra timeout 60 phút
     (function() {
       var _s = localStorage.getItem('pccc_session');
-      if (!_s) {
+      var _exp = parseInt(localStorage.getItem('pccc_session_expire') || '0');
+      if (!_s || Date.now() > _exp) {
+        localStorage.removeItem('pccc_session');
+        localStorage.removeItem('pccc_session_expire');
         document.documentElement.style.visibility = 'hidden';
         var _d = new URLSearchParams(window.location.search).get('device') || '';
         window.location.replace('Login.html?returnUrl=' + encodeURIComponent(window.location.href) + '&device=' + encodeURIComponent(_d));
         return;
       }
+      // Gia hạn thêm 60 phút kể từ bây giờ
+      localStorage.setItem('pccc_session_expire', String(Date.now() + 60 * 60 * 1000));
     })();
     let deviceData = null;
     let selectedImage = null;

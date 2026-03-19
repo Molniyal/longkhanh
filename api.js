@@ -4,6 +4,60 @@ const APP_CONFIG = {
 };
 
 /**
+ * Session Manager - Quản lý phiên đăng nhập với timeout tự động
+ * Timeout mặc định: 60 phút không hoạt động
+ */
+const SESSION_KEY = 'pccc_session';
+const SESSION_EXPIRE_KEY = 'pccc_session_expire';
+const SESSION_TIMEOUT_MS = 60 * 60 * 1000; // 60 phút
+
+const SessionManager = {
+  /** Lấy user hiện tại, trả về null nếu hết hạn hoặc chưa đăng nhập */
+  getUser() {
+    try {
+      const expireTime = parseInt(localStorage.getItem(SESSION_EXPIRE_KEY) || '0');
+      if (Date.now() > expireTime) {
+        // Session hết hạn - tự xóa
+        this.clear();
+        return null;
+      }
+      const raw = localStorage.getItem(SESSION_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      this.clear();
+      return null;
+    }
+  },
+
+  /** Lưu session mới sau khi đăng nhập thành công */
+  save(userData) {
+    localStorage.setItem(SESSION_KEY, JSON.stringify(userData));
+    localStorage.setItem(SESSION_EXPIRE_KEY, String(Date.now() + SESSION_TIMEOUT_MS));
+  },
+
+  /** Làm mới thời gian hết hạn (gọi khi user đang hoạt động) */
+  refresh() {
+    if (localStorage.getItem(SESSION_KEY)) {
+      localStorage.setItem(SESSION_EXPIRE_KEY, String(Date.now() + SESSION_TIMEOUT_MS));
+    }
+  },
+
+  /** Xóa session (đăng xuất) */
+  clear() {
+    localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(SESSION_EXPIRE_KEY);
+    // Giữ tương thích ngược
+    localStorage.removeItem('user');
+  },
+
+  /** Kiểm tra còn bao nhiêu phút trước khi hết hạn */
+  minutesLeft() {
+    const expireTime = parseInt(localStorage.getItem(SESSION_EXPIRE_KEY) || '0');
+    return Math.max(0, Math.round((expireTime - Date.now()) / 60000));
+  }
+};
+
+/**
  * Gọi API backend trên Google Apps Script
  */
 async function callAPI(action, payload = {}) {
@@ -23,6 +77,7 @@ async function callAPI(action, payload = {}) {
     }
 
     const data = await response.json();
+    if (data.success) SessionManager.refresh(); // Tự động làm mới session khi có tương tác API thành công
     return data;
   } catch (error) {
     console.error("API Error:", error);

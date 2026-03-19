@@ -237,7 +237,7 @@
       try {
         const res = await callAPI('login', { username: u, password: p });
         if (res.success) {
-          localStorage.setItem('pccc_session', JSON.stringify(res.user));
+          SessionManager.save(res.user);  // Lưu session + timestamp tự động
           // Ưu tiên: returnUrl trực tiếp (URL đầy đủ của Form sau khi quét QR)
           if (URL_RETURN) {
             window.location.href = URL_RETURN;

@@ -1065,13 +1065,12 @@
 
     // --- Khởi tạo hệ thống ---
     window.onload = async function () {
-      const session = localStorage.getItem('pccc_session');
-      if (!session) {
+      currentUser = SessionManager.getUser();
+      if (!currentUser) {
         window.location.href = 'Login.html';
         return;
       }
       try {
-        currentUser = JSON.parse(session);
         document.getElementById('sidebarUser').innerHTML = `
           <div style="font-weight:700; color:white; font-size:15px; margin-bottom:5px">👋 ${currentUser.hoTen}</div>
           <div style="opacity:0.6; font-size:11px; text-transform:uppercase; letter-spacing:1px">${currentUser.vaiTro} | ${currentUser.xuong || 'Global'}</div>
@@ -1134,6 +1133,7 @@
 
     // --- Dữ liệu & Biểu đồ ---
     async function loadDashboard(filter = {}) {
+      SessionManager.refresh(); // Tự động gia hạn session khi tải dữ liệu
       const grid = document.getElementById('workshopGrid');
       try {
         const res = await callAPI('getDashboardData', { filter: filter, limit: 200 });
@@ -1360,8 +1360,7 @@
     }
 
     function logout() {
-      localStorage.removeItem('pccc_session');
-      localStorage.removeItem('user');
+      SessionManager.clear();
       window.location.href = 'Login.html';
     }
 

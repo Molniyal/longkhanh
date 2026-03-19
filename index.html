@@ -50,9 +50,14 @@
         
         window.location.href = target + '?device=' + encodeURIComponent(deviceId);
       } else {
-        const user = localStorage.getItem('pccc_session');
-        if (user) {
-          const u = JSON.parse(user);
+        const session = localStorage.getItem('pccc_session');
+        const expireTime = parseInt(localStorage.getItem('pccc_session_expire') || '0');
+        
+        if (session && Date.now() < expireTime) {
+          const u = JSON.parse(session);
+          // Làm mới timeout khi truy cập trang chủ
+          localStorage.setItem('pccc_session_expire', String(Date.now() + 60 * 60 * 1000));
+          
           if (['Admin', 'HSE'].includes(u.vaiTro)) {
             window.location.href = 'Admin.html';
           } else {
@@ -68,6 +73,9 @@
             document.querySelector('.dna-spinner').style.border = 'none';
           }
         } else {
+          // Hết hạn hoặc chưa đăng nhập
+          localStorage.removeItem('pccc_session');
+          localStorage.removeItem('pccc_session_expire');
           window.location.href = 'Login.html';
         }
       }
