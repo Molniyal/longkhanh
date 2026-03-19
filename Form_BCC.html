@@ -201,13 +201,16 @@
     (function () {
       var session = localStorage.getItem('pccc_session');
       if (!session) {
-        window.location.href = 'Login.html?returnUrl=' + encodeURIComponent(window.location.href) + '&device=' + encodeURIComponent(DEVICE_CODE);
+        // Ẩn ngay lập tức để tránh flash nội dung trước khi redirect
+        document.documentElement.style.visibility = 'hidden';
+        window.location.replace('Login.html?returnUrl=' + encodeURIComponent(window.location.href) + '&device=' + encodeURIComponent(DEVICE_CODE));
         return;
       }
       try {
         currentUser = JSON.parse(session);
       } catch (e) {
-        window.location.href = 'Login.html?device=' + encodeURIComponent(DEVICE_CODE);
+        document.documentElement.style.visibility = 'hidden';
+        window.location.replace('Login.html?device=' + encodeURIComponent(DEVICE_CODE));
       }
     })();
   </script>

@@ -153,6 +153,16 @@
 
   <script src="api.js"></script>
   <script>
+    // Session guard - bắt buộc đăng nhập trước khi dùng form
+    (function() {
+      var _s = localStorage.getItem('pccc_session');
+      if (!_s) {
+        document.documentElement.style.visibility = 'hidden';
+        var _d = new URLSearchParams(window.location.search).get('device') || '';
+        window.location.replace('Login.html?returnUrl=' + encodeURIComponent(window.location.href) + '&device=' + encodeURIComponent(_d));
+        return;
+      }
+    })();
     let deviceData = null;
     let selectedImage = null;
     let currentUser = null;

@@ -1,88 +1,194 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Đăng nhập - PCCC</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --glass-bg: rgba(255, 255, 255, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.4);
-    --primary: #c62828;
-    --secondary: #1a237e;
-    --text: #1a1a1a;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Đăng nhập - PCCC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.4);
+      --primary: #c62828;
+      --secondary: #1a237e;
+      --text: #1a1a1a;
+    }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  body {
-    font-family: 'Outfit', sans-serif;
-    background: linear-gradient(135deg, #1a237e 0%, #c62828 100%);
-    background-attachment: fixed;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    overflow: hidden;
-  }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(135deg, #1a237e 0%, #c62828 100%);
+      background-attachment: fixed;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow: hidden;
+    }
 
-  /* Animated background shapes */
-  .shape {
-    position: absolute; border-radius: 50%; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px);
-    z-index: -1; animation: float 10s infinite alternate ease-in-out;
-  }
-  .shape-1 { width: 300px; height: 300px; top: -100px; left: -100px; background: rgba(26, 35, 126, 0.3); }
-  .shape-2 { width: 200px; height: 200px; bottom: -50px; right: -50px; background: rgba(198, 40, 40, 0.3); }
+    /* Animated background shapes */
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
+      z-index: -1;
+      animation: float 10s infinite alternate ease-in-out;
+    }
 
-  @keyframes float {
-    from { transform: translate(0, 0) rotate(0deg); }
-    to { transform: translate(20px, 40px) rotate(10deg); }
-  }
+    .shape-1 {
+      width: 300px;
+      height: 300px;
+      top: -100px;
+      left: -100px;
+      background: rgba(26, 35, 126, 0.3);
+    }
 
-  .glass-card {
-    background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border); border-radius: 32px; padding: 48px 40px;
-    width: 100%; max-width: 400px; box-shadow: 0 15px 45px rgba(0,0,0,0.2);
-    text-align: center;
-  }
+    .shape-2 {
+      width: 200px;
+      height: 200px;
+      bottom: -50px;
+      right: -50px;
+      background: rgba(198, 40, 40, 0.3);
+    }
 
-  .logo-icon { font-size: 64px; margin-bottom: 20px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1)); }
-  h1 { font-size: 24px; font-weight: 800; color: var(--secondary); margin-bottom: 8px; letter-spacing: -0.5px; }
-  p.subtitle { color: #666; font-size: 14px; margin-bottom: 32px; }
+    @keyframes float {
+      from {
+        transform: translate(0, 0) rotate(0deg);
+      }
 
-  .input-group { text-align: left; margin-bottom: 20px; }
-  label { display: block; font-size: 13px; font-weight: 700; color: var(--secondary); margin-bottom: 8px; margin-left: 4px; }
-  input {
-    width: 100%; padding: 16px 20px; background: rgba(255,255,255,0.5);
-    border: 2px solid rgba(0,0,0,0.05); border-radius: 16px; font-size: 15px; outline: none;
-    transition: all 0.3s; font-family: inherit;
-  }
-  input:focus { border-color: var(--secondary); background: white; box-shadow: 0 5px 15px rgba(26,35,126,0.1); }
+      to {
+        transform: translate(20px, 40px) rotate(10deg);
+      }
+    }
 
-  .btn-login {
-    width: 100%; padding: 18px; background: linear-gradient(135deg, #1a237e, #311b92);
-    color: white; border: none; border-radius: 18px; font-size: 17px; font-weight: 800;
-    cursor: pointer; transition: all 0.3s; margin-top: 10px;
-    box-shadow: 0 8px 20px rgba(26,35,126,0.3);
-  }
-  .btn-login:active { transform: scale(0.98); }
-  .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 32px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
 
-  .error-box {
-    margin-top: 20px; padding: 12px; border-radius: 12px; background: rgba(198, 40, 40, 0.1);
-    color: var(--primary); font-size: 13px; font-weight: 600; display: none;
-  }
+    .logo-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1));
+    }
 
-  .spinner {
-    display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3);
-    border-radius: 50%; border-top-color: white; animation: spin 0.8s ease-in-out infinite;
-    vertical-align: middle; margin-right: 10px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-</style>
+    h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--secondary);
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    p.subtitle {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    .input-group {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--secondary);
+      margin-bottom: 8px;
+      margin-left: 4px;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.5);
+      border: 2px solid rgba(0, 0, 0, 0.05);
+      border-radius: 16px;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    input:focus {
+      border-color: var(--secondary);
+      background: white;
+      box-shadow: 0 5px 15px rgba(26, 35, 126, 0.1);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #1a237e, #311b92);
+      color: white;
+      border: none;
+      border-radius: 18px;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+      box-shadow: 0 8px 20px rgba(26, 35, 126, 0.3);
+    }
+
+    .btn-login:active {
+      transform: scale(0.98);
+    }
+
+    .btn-login:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .error-box {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(198, 40, 40, 0.1);
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 600;
+      display: none;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s ease-in-out infinite;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
 </head>
+
 <body>
   <div class="shape shape-1"></div>
   <div class="shape shape-2"></div>
@@ -103,7 +209,7 @@
     </div>
 
     <button class="btn-login" id="loginBtn" onclick="doLogin()">ĐĂNG NHẬP</button>
-    
+
     <div class="error-box" id="errorMsg"></div>
   </div>
 
@@ -132,15 +238,23 @@
         const res = await callAPI('login', { username: u, password: p });
         if (res.success) {
           localStorage.setItem('pccc_session', JSON.stringify(res.user));
-          if (URL_DEVICE) window.location.href = 'index.html?device=' + encodeURIComponent(URL_DEVICE);
-          else if (['Admin', 'HSE'].includes(res.user.vaiTro)) window.location.href = 'Admin.html';
-          else window.location.href = 'index.html';
+          // Ưu tiên: returnUrl trực tiếp (URL đầy đủ của Form sau khi quét QR)
+          if (URL_RETURN) {
+            window.location.href = URL_RETURN;
+          } else if (URL_DEVICE) {
+            // Fallback: redirect qua index.html để tự xác định loại form
+            window.location.href = 'index.html?device=' + encodeURIComponent(URL_DEVICE);
+          } else if (['Admin', 'HSE'].includes(res.user.vaiTro)) {
+            window.location.href = 'Admin.html';
+          } else {
+            window.location.href = 'index.html';
+          }
         } else {
           showError(res.message);
           btn.disabled = false;
           btn.innerHTML = 'ĐĂNG NHẬP';
         }
-      } catch(e) {
+      } catch (e) {
         showError('Không thể kết nối đến máy chủ');
         btn.disabled = false;
         btn.innerHTML = 'ĐĂNG NHẬP';
@@ -153,4 +267,5 @@
     }
   </script>
 </body>
+
 </html>
